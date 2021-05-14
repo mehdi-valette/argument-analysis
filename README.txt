@@ -1,0 +1,1 @@
+This is a POC (proof of concept) for an application that helps to analyse a text following the 7 steps for arguments analysis.
