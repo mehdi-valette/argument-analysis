@@ -69,6 +69,8 @@ export default class DefinitionList extends Vue {
   beforeDestroy() {
     this.$bus.$off('text-selection-definition-response');
   }
+  
+  // TODO: when a definition is created, give it the focus immediately.
 }
 </script>
 
