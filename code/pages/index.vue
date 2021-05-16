@@ -1,75 +1,48 @@
-<template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        code
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+div.index
+  definition-text(text="Dans le monde des chauds et doux chaudoudoux, chaque personne reçoit à la naissance un sac magique. Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main, elle en ressort un chaudoudoux.")
+  definition-list
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { Vue, Component } from 'vue-property-decorator';
+import DefinitionText from '~/components/DefinitionText.vue';
+import DefinitionList from '~/components/DefinitionList.vue';
 
-export default Vue.extend({})
+@Component({
+  components: {
+    DefinitionText,
+    DefinitionList
+  }
+})
+export default class Index extends Vue {
+  mounted() {
+      window.addEventListener('keydown', this.keyboardHandler);
+  }
+
+  beforeDestroy() {
+      window.removeEventListener('keydown', this.keyboardHandler);
+  }
+
+  keyboardHandler(event) {
+    if(event.key === "Enter" && event.ctrlKey === false) {
+      this.$bus.$emit('text-selection-definition-get', null);
+    } else if(
+      event.key ==="Enter" && event.ctrlKey === true
+    ) {
+        this.$bus.$emit('text-selection-definition-mode-toggle', null);
+      }
+  }
+}
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+<style lang="scss">
+.index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+  padding: 1em;
+  align-content: stretch;
+  height: 100%;
 }
 </style>
