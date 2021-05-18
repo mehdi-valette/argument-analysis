@@ -10,3 +10,8 @@ export interface TextDefinition {
     range: TextSelection[];
     definition: string;
 }
+
+export interface BusEvent {
+  header: any[],
+  payload: any
+}

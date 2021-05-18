@@ -24,9 +24,9 @@ export default class Index extends Vue {
       window.removeEventListener('keydown', this.keyboardHandler);
   }
 
-  keyboardHandler(event) {
+  keyboardHandler(event: KeyboardEvent) {
     if(event.key === "Enter" && event.ctrlKey === false) {
-      this.$bus.$emit('text-selection-definition-get', null);
+      this.$bus.$emit('text-selection-definition-trigger', {header: [{emitter: 'index'}]});
     } else if(
       event.key ==="Enter" && event.ctrlKey === true
     ) {

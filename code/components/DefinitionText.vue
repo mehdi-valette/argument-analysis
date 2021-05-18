@@ -8,8 +8,8 @@ div.text-definition
     ) selection mode&nbsp;
     b-icon(
       icon="question-circle"
-      v-b-tootlip.hover
-      title="(shortcut: CTRL+Enter) In mode 'selection' we can select the text; otherwise we can read the definitions"
+      v-b-tooltip.hover
+      title="(shortcut: CTRL+Enter) Toggle between the mode 'selection' which allows to select the text, and the mode 'read' which displays the definition when the cursor hovers the words."
     )
 
   div.text
@@ -34,7 +34,7 @@ import {Vue, Component, Prop} from 'vue-property-decorator';
 import cuid from 'cuid';
 import {BIcon, BIconQuestionCircle} from 'bootstrap-vue';
 
-import {TextDefinition} from '@/types/seven-steps';
+import {BusEvent, TextDefinition} from '@/types/seven-steps';
 
 @Component({
   components: {
@@ -103,7 +103,7 @@ export default class DefinitionText extends Vue {
       this.modeSelection = !this.modeSelection;
     });
 
-    this.$bus.$on('text-selection-definition-get', () => {
+    this.$bus.$on('text-selection-definition-trigger', (message: BusEvent) => {
       const payload: TextDefinition = {
         localId: cuid(),
         range: [],
@@ -112,6 +112,8 @@ export default class DefinitionText extends Vue {
 
       const selection = getSelection();
 
+      // if the selection is entirely in the text,
+      // add the ranges to the payload
       if(
         selection !== null && selection.type === 'Range' &&
         selection.anchorNode === selection.focusNode &&
@@ -125,7 +127,11 @@ export default class DefinitionText extends Vue {
       }
 
       if(payload.range.length > 0) {
-        this.$bus.$emit('text-selection-definition-response', payload);
+        message.header.push({emitter: 'definition-text'});
+        this.$bus.$emit(
+          'text-selection-definition-response',
+          {header: message.header, payload}
+        );
       }
     });
   }

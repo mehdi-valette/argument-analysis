@@ -2,7 +2,11 @@
 div.definition-list 
   div.top
     b-list-group
-      b-list-group-item(v-for="definition in definitionList")
+      b-list-group-item(
+        v-for="definition in definitionList"
+        :key="definition.localId"
+        ref="definitionComponent"
+      )
         definition-list-item(:definition="definition")
 
   div.bottom
@@ -17,9 +21,10 @@ div.definition-list
 </template>
 
 <script lang="ts">
-import {Vue, Component} from 'vue-property-decorator';
-import { TextSelection, TextDefinition } from '~/types/seven-steps';
+import {Vue, Component, Watch} from 'vue-property-decorator';
+import { TextSelection, TextDefinition, BusEvent } from '~/types/seven-steps';
 import DefinitionListItem from '@/components/DefinitionListItem.vue';
+import {definitionExists} from '@/assets/ts/definition-util';
 
 @Component({
   components: {
@@ -27,50 +32,46 @@ import DefinitionListItem from '@/components/DefinitionListItem.vue';
   }
 })
 export default class DefinitionList extends Vue {
+  private definitionListCheck: string[] = [];
+  private definitionReference: Element[] = [];
+
   get definitionList() {
     return this.$store.getters['definition'] as TextDefinition[];
   }
 
   getDefinition() {
-    this.$bus.$emit('text-selection-definition-get', null);
+    this.$bus.$emit(
+      'text-selection-definition-trigger',
+      {
+        header: [{emitter: 'definition-list'}]
+      }
+    );
   }
 
   mounted() {
-    this.$bus.$on('text-selection-definition-response', (newDefinition: TextDefinition) => {
+    this.$bus.$on('text-selection-definition-response', (message: BusEvent) => {
 
-      // aggregate all the ranges in the "definition" database
-      const allRange: TextSelection[] = [];
-      this.definitionList.forEach(definition => {
-        allRange.push(...definition.range)
-      });
+      // verify that the event was triggered either
+      // by this component or by the index page (ENTER key)
+      if(!(
+        message.header.length > 0 &&
+        ['definition-list', 'index'].includes(message.header[0].emitter)
+      )) {
+        return;
+      }
 
-      // verify if one of the ranges in the new selection
-      // overlaps with an existing range
-      const overlap = newDefinition.range.find(newRange => {
+      const  newDefinition = message.payload as TextDefinition;
 
-        // look for a range that overlaps
-        const overlappingRange =
-          allRange.find(range =>
-            !(newRange.end <= range.start || newRange.start >= range.end)
-          );
-        
-        // if overlapping range is not undefined
-        // that means we found a range that overlaps
-        return overlappingRange !== undefined;
-      });
-
-      // add the definition if there's no overlap with an existing range
-      if(overlap === undefined) {
+      if(!definitionExists(this.definitionList, newDefinition)) {
         this.$store.commit('definitionCreate', newDefinition);
       }
+
     })
   }
 
   beforeDestroy() {
     this.$bus.$off('text-selection-definition-response');
   }
-  
-  // TODO: when a definition is created, give it the focus immediately.
 }
 </script>
 
