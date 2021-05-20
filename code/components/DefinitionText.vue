@@ -12,21 +12,22 @@ div.text-definition
       title="(shortcut: CTRL+Enter) Toggle between the mode 'selection' which allows to select the text, and the mode 'read' which displays the definition when the cursor hovers the words."
     )
 
-  div.text
-    // text for selection (range.startOffset and range.endOffset are correct)
-    div.position-absolute(:id="textId" v-if="modeSelection")
-      template(v-for="display in textDisplayed")
-          template {{display.text}}
+  text-editor(:text="text")
+  //- div.text
+  //-   // text for selection (range.startOffset and range.endOffset are correct)
+  //-   div.position-absolute(:id="textId" v-if="modeSelection")
+  //-     template(v-for="display in textDisplayed")
+  //-         template {{display.text}}
 
-    // text for display (range.startOffset and range.endOffset are wrong because of <span>)
-    div(style="user-select: none;")
-      template(v-for="display in textDisplayed")
-        span.highlight-definition(
-          v-if="display.highlight"
-          v-b-tooltip.hover
-          :title="display.definition"
-        ) {{display.text}}
-        template(v-else) {{display.text}}
+  //-   // text for display (range.startOffset and range.endOffset are wrong because of <span>)
+  //-   div(style="user-select: none;")
+  //-     template(v-for="display in textDisplayed")
+  //-       span.highlight-definition(
+  //-         v-if="display.highlight"
+  //-         v-b-tooltip.hover
+  //-         :title="display.definition"
+  //-       ) {{display.text}}
+  //-       template(v-else) {{display.text}}
 </template>
 
 <script lang="ts">
@@ -35,11 +36,13 @@ import cuid from 'cuid';
 import {BIcon, BIconQuestionCircle} from 'bootstrap-vue';
 
 import {BusEvent, TextDefinition} from '@/types/seven-steps';
+import TextEditor from '@/components/TextEditor.vue';
 
 @Component({
   components: {
     BIcon,
-    BIconQuestionCircle
+    BIconQuestionCircle,
+    TextEditor
   }
 })
 export default class DefinitionText extends Vue {

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.index
-  definition-text(text="Dans le monde des chauds et doux chaudoudoux, chaque personne reçoit à la naissance un sac magique. Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main, elle en ressort un chaudoudoux.")
+  definition-text(text="Dans le monde des chauds et doux chaudoudoux,\n chaque personne reçoit à la naissance un sac magique. Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main, elle en ressort un chaudoudoux.")
   definition-list
 </template>
 

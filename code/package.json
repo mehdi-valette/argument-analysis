@@ -12,6 +12,9 @@
     "test:e2e": "cross-env TEST=e2e ava ./test/e2e/**/*"
   },
   "dependencies": {
+    "@tiptap/core": "^2.0.0-beta.66",
+    "@tiptap/starter-kit": "^2.0.0-beta.63",
+    "@tiptap/vue-2": "^2.0.0-beta.31",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
