@@ -4,11 +4,14 @@ import {
   markInputRule,
   markPasteRule,
   mergeAttributes,
-} from '@tiptap/core'
+} from '@tiptap/core';
 
 export interface DefinitionOptions {
-  HTMLAttributes: Record<string, any>
-  definitionId: string
+  HTMLAttributes: Record<string, any>;
+  id: string;
+  from: number;
+  to: number;
+  definition: string;
 }
 
 declare module '@tiptap/core' {
@@ -17,23 +20,28 @@ declare module '@tiptap/core' {
       /**
        * Set a definition mark
        */
-      setDefinition: (attributes: { definitionId: string }) => Command
+      setDefinition: (attributes: {
+        id: string;
+        from: number;
+        to: number;
+        definition: string;
+      }) => Command;
       /**
        * Toggle a definition mark
        */
-      toggleDefinition: () => Command
+      toggleDefinition: () => Command;
       /**
        * Unset a definition mark
        */
-      unsetDefinition: () => Command
-    }
+      unsetDefinition: () => Command;
+    };
   }
 }
 
-export const starInputRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))$/gm
-export const starPasteRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/gm
-export const underscoreInputRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/gm
-export const underscorePasteRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/gm
+export const starInputRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))$/gm;
+export const starPasteRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/gm;
+export const underscoreInputRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/gm;
+export const underscorePasteRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/gm;
 
 export const Definition = Mark.create<DefinitionOptions>({
   name: 'definition',
@@ -42,43 +50,51 @@ export const Definition = Mark.create<DefinitionOptions>({
     HTMLAttributes: {
       class: 'definition',
     },
-    definitionId: '',
+    id: '',
+    from: -1,
+    to: -1,
+    definition: '',
   },
 
   parseHTML() {
     return [
       {
         tag: 'span',
-      },
-      {
-        tag: 'def',
         getAttrs: (node) =>
-          (node as HTMLElement).style.fontWeight !== 'normal' && null,
+          (node as HTMLElement).dataset['definition'] !== undefined && null,
       },
-      {
-        style: 'data-definition',
-        getAttrs: (value) => true && null,
-      },
-    ]
+    ];
   },
 
   addAttributes() {
     return {
-      definitionId: {
+      id: {
         default: '',
         rendered: false,
       },
-    }
+      from: {
+        default: -1,
+        rendered: false,
+      },
+      to: {
+        default: -1,
+        rendered: false,
+      },
+      definition: {
+        default: '',
+        rendered: false,
+      },
+    };
   },
 
   renderHTML({ mark, HTMLAttributes }) {
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, {
-        'data-definition': mark.attrs.definitionId,
+        title: mark.attrs.definition,
       }),
       0,
-    ]
+    ];
   },
 
   addCommands() {
@@ -86,38 +102,38 @@ export const Definition = Mark.create<DefinitionOptions>({
       setDefinition:
         (attributes) =>
         ({ commands }) => {
-          return commands.setMark('definition', attributes)
+          return commands.setMark('definition', attributes);
         },
       toggleDefinition:
         () =>
         ({ commands }) => {
-          return commands.toggleMark('definition')
+          return commands.toggleMark('definition');
         },
       unsetDefinition:
         () =>
         ({ commands }) => {
-          return commands.unsetMark('definition')
+          return commands.unsetMark('definition');
         },
-    }
+    };
   },
 
   addKeyboardShortcuts() {
     return {
       'Mod-b': () => this.editor.commands.toggleDefinition(),
-    }
+    };
   },
 
   addInputRules() {
     return [
       markInputRule(starInputRegex, this.type),
       markInputRule(underscoreInputRegex, this.type),
-    ]
+    ];
   },
 
   addPasteRules() {
     return [
       markPasteRule(starPasteRegex, this.type),
       markPasteRule(underscorePasteRegex, this.type),
-    ]
+    ];
   },
-})
+});

@@ -21,7 +21,7 @@ div.definition-list-item-text-selection
 
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
-import { TextSelection } from '~/types/seven-steps';
+import { BusEvent, TextSelection } from '~/types/seven-steps';
 
 import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
 
@@ -41,16 +41,15 @@ export default class DefinitionlistItemTextSelection extends Vue {
   private deleteModalShow: boolean = false;
 
   deleteText() {
-    console.log('trying to delete');
-
-    this.$store.commit(
-      'definitionTextSelectionDelete',
-      {
-        localId: this.definitionId,
-        start: this.textSelection.start,
-        end: this.textSelection.end,
+    const message: BusEvent = {
+      header: [{emitter: 'definition-list-item-range'}],
+      payload: {
+        from: this.textSelection.from,
+        to: this.textSelection.to,
       }
-    );
+    }
+
+    this.$bus.$emit('text-definition-range-delete', message);
   }
 }
 </script>

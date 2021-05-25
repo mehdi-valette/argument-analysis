@@ -40,11 +40,16 @@ export default class DefinitionList extends Vue {
   }
 
   getDefinition() {
-    this.$bus.$emit(
-      'text-selection-definition-trigger',
-      {
-        header: [{emitter: 'definition-list'}]
+    const message: BusEvent = {
+      header: [{emitter: 'definition-list'}],
+      payload: {
+        localId: '',
+        definition: '',
       }
+    }
+
+    this.$bus.$emit(
+      'text-selection-definition-trigger', message
     );
   }
 

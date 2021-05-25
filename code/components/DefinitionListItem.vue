@@ -71,20 +71,38 @@ export default class DefinitionListItem extends Vue {
   set definitionText(newDefinition: string) {}
 
   definitionUpdate(newDefinition: string) {
-    this.$store.commit('definitionUpdate', {localId: this.definition.localId, newDefinition});
+    const message: BusEvent = {
+      header: [{
+        emitter: 'definition-list-item',
+      }],
+      payload: {
+        definition: this.definition,
+        newDefinition
+      }
+    }
+    this.$bus.$emit('text-definition-update', message);
   }
 
   definitionDelete() {
-    this.$store.commit('definitionDelete', this.definition.localId);
+    const message: BusEvent = {
+      header: [{emitter: 'definition-list-item'}],
+      payload: this.definition
+    }
+
+    this.$bus.$emit('text-definition-delete', message);
+    // this.$store.commit('definitionDelete', this.definition.localId);
   }
 
   // add the selected text to the definition
   addSelection() {
+    const message: BusEvent = {
+      header: [{emitter: `definition-list-item`}],
+      payload: this.definition
+    }
+
     this.$bus.$emit(
       'text-selection-definition-trigger',
-      {
-        header: [{emitter: `definition-list-item-${this.definition.localId}`}],
-      }
+      message
     );
   }
 
@@ -93,32 +111,32 @@ export default class DefinitionListItem extends Vue {
       (this.$refs.definitionInput as any).focus();
     }
 
-    this.$bus.$on('text-selection-definition-response', (message: BusEvent) => {
-      // verify this component triggered the event
-      if(!(
-        message.header.length > 0 &&
-        message.header[0].emitter ===
-          `definition-list-item-${this.definition.localId}`
-      )) {
-        return;
-      }
+    // this.$bus.$on('text-selection-definition-response', (message: BusEvent) => {
+    //   // verify this component triggered the event
+    //   if(!(
+    //     message.header.length > 0 &&
+    //     message.header[0].emitter ===
+    //       `definition-list-item-${this.definition.localId}`
+    //   )) {
+    //     return;
+    //   }
 
-      // get the text that was selected
-      const newDefinition = message.payload as TextDefinition;
+    //   // get the text that was selected
+    //   const newDefinition = message.payload as TextDefinition;
 
-      if(!definitionExists(
-        this.$store.getters['definition'] as TextDefinition[],
-        newDefinition
-      )) {
-        this.$store.commit(
-          'definitionTextSelectionAdd',
-          {
-            localId: this.definition.localId,
-            textSelection: newDefinition.range
-          }
-        );
-      }
-    });
+    //   if(!definitionExists(
+    //     this.$store.getters['definition'] as TextDefinition[],
+    //     newDefinition
+    //   )) {
+    //     this.$store.commit(
+    //       'definitionTextSelectionAdd',
+    //       {
+    //         localId: this.definition.localId,
+    //         textSelection: newDefinition.range
+    //       }
+    //     );
+    //   }
+    // });
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.index
-  definition-text(text="Dans le monde des chauds et doux chaudoudoux,\n chaque personne reçoit à la naissance un sac magique. Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main, elle en ressort un chaudoudoux.")
+  definition-text(text="Dans le monde des chauds et doux chaudoudoux,<p>chaque personne reçoit à la naissance <blockquote>un sac magique.</blockquote><p>Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main,<p>elle en ressort un chaudoudoux.")
   definition-list
 </template>
 
@@ -8,6 +8,7 @@ div.index
 import { Vue, Component } from 'vue-property-decorator';
 import DefinitionText from '~/components/DefinitionText.vue';
 import DefinitionList from '~/components/DefinitionList.vue';
+import { BusEvent, TextDefinition } from '~/types/seven-steps';
 
 @Component({
   components: {
@@ -26,12 +27,17 @@ export default class Index extends Vue {
 
   keyboardHandler(event: KeyboardEvent) {
     if(event.key === "Enter" && event.ctrlKey === false) {
-      this.$bus.$emit('text-selection-definition-trigger', {header: [{emitter: 'index'}]});
-    } else if(
-      event.key ==="Enter" && event.ctrlKey === true
-    ) {
-        this.$bus.$emit('text-selection-definition-mode-toggle', null);
+      const message: BusEvent = {
+        header: [{emitter: 'index'}],
+        payload: {
+          localId: '',
+          definition: '',
+          range: []
+        } as TextDefinition
       }
+
+      this.$bus.$emit('text-selection-definition-trigger', message);
+    }
   }
 }
 </script>
