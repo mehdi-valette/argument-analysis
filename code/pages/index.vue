@@ -8,7 +8,7 @@ div.index
 import { Vue, Component } from 'vue-property-decorator';
 import DefinitionText from '~/components/DefinitionText.vue';
 import DefinitionList from '~/components/DefinitionList.vue';
-import { BusEvent, TextDefinition } from '~/types/seven-steps';
+import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
 
 @Component({
   components: {
@@ -27,7 +27,7 @@ export default class Index extends Vue {
 
   keyboardHandler(event: KeyboardEvent) {
     if(event.key === "Enter" && event.ctrlKey === false) {
-      const message: BusEvent = {
+      const message: EventBusMessage = {
         header: [{emitter: 'index'}],
         payload: {
           localId: '',
@@ -36,7 +36,7 @@ export default class Index extends Vue {
         } as TextDefinition
       }
 
-      this.$bus.$emit('text-selection-definition-trigger', message);
+      this.$bus.$emit('text-definition-add', message);
     }
   }
 }

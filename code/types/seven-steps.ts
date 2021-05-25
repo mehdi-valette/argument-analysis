@@ -1,17 +1,17 @@
-export interface TextSelection {
-  from: number
-  to: number
-  text: string
+export interface TextRange {
+  from: number;
+  to: number;
+  text: string;
 }
 
 export interface TextDefinition {
-  localId: string
-  databaseId?: string
-  range: TextSelection[]
-  definition: string
+  localId: string;
+  databaseId?: string;
+  range: TextRange[];
+  definition: string;
 }
 
-export interface BusEvent {
-  header: any[]
-  payload: any
+export interface EventBusMessage {
+  header: any[];
+  payload: any;
 }

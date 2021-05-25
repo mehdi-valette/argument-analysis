@@ -17,9 +17,9 @@ div.definition-list-item
   )
   
   //- original text (multiple texts possible)
-  definition-list-item-text-selection(
+  definition-list-item-range(
     v-for="range in definition.range"
-    :text-selection="range"
+    :definition-range="range"
     :definition-id="definition.localId"
   )
 
@@ -45,9 +45,9 @@ div.definition-list-item
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import {BIcon, BIconXOctagon, BIconNodePlus} from 'bootstrap-vue';
 
-import { BusEvent, TextDefinition } from '~/types/seven-steps';
-import DefinitionListItemTextSelection from
-  '@/components/DefinitionListItemTextSelection.vue';
+import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
+import DefinitionListItemRange from
+  '~/components/DefinitionListItemRange.vue';
 import { definitionExists } from '~/assets/ts/definition-util';
 import DefinitionText from './DefinitionText.vue';
 
@@ -55,7 +55,7 @@ import DefinitionText from './DefinitionText.vue';
   components: {
     BIcon,
     BIconXOctagon,
-    DefinitionListItemTextSelection,
+    DefinitionListItemRange,
     BIconNodePlus,
   }
 })
@@ -71,37 +71,22 @@ export default class DefinitionListItem extends Vue {
   set definitionText(newDefinition: string) {}
 
   definitionUpdate(newDefinition: string) {
-    const message: BusEvent = {
-      header: [{
-        emitter: 'definition-list-item',
-      }],
-      payload: {
-        definition: this.definition,
-        newDefinition
-      }
-    }
-    this.$bus.$emit('text-definition-update', message);
+    this.$store.commit('definitionUpdate', {localId: this.definition.localId, newDefinition});
   }
 
   definitionDelete() {
-    const message: BusEvent = {
-      header: [{emitter: 'definition-list-item'}],
-      payload: this.definition
-    }
-
-    this.$bus.$emit('text-definition-delete', message);
-    // this.$store.commit('definitionDelete', this.definition.localId);
+    this.$store.commit('definitionDelete', this.definition.localId);
   }
 
   // add the selected text to the definition
   addSelection() {
-    const message: BusEvent = {
+    const message: EventBusMessage = {
       header: [{emitter: `definition-list-item`}],
       payload: this.definition
     }
 
     this.$bus.$emit(
-      'text-selection-definition-trigger',
+      'text-definition-add',
       message
     );
   }
@@ -110,33 +95,6 @@ export default class DefinitionListItem extends Vue {
     if(this.definitionText === '') {
       (this.$refs.definitionInput as any).focus();
     }
-
-    // this.$bus.$on('text-selection-definition-response', (message: BusEvent) => {
-    //   // verify this component triggered the event
-    //   if(!(
-    //     message.header.length > 0 &&
-    //     message.header[0].emitter ===
-    //       `definition-list-item-${this.definition.localId}`
-    //   )) {
-    //     return;
-    //   }
-
-    //   // get the text that was selected
-    //   const newDefinition = message.payload as TextDefinition;
-
-    //   if(!definitionExists(
-    //     this.$store.getters['definition'] as TextDefinition[],
-    //     newDefinition
-    //   )) {
-    //     this.$store.commit(
-    //       'definitionTextSelectionAdd',
-    //       {
-    //         localId: this.definition.localId,
-    //         textSelection: newDefinition.range
-    //       }
-    //     );
-    //   }
-    // });
   }
 }
 </script>

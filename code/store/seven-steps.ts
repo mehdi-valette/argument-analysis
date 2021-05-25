@@ -1,6 +1,6 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
 import cloneDeep from 'lodash.clonedeep';
-import { TextDefinition, TextSelection } from '~/types/seven-steps';
+import { TextDefinition, TextRange } from '~/types/seven-steps';
 
 @Module({
   name: '7step',
@@ -48,7 +48,7 @@ export default class SevenStep extends VuexModule {
     range,
   }: {
     localId: string;
-    range: TextSelection[];
+    range: TextRange[];
   }) {
     const definitionList = cloneDeep(this._definition);
     definitionList.forEach((definition) => {
@@ -60,52 +60,52 @@ export default class SevenStep extends VuexModule {
     this._definition = definitionList;
   }
 
-  // /** remove a text-selection from a definition */
-  // @Mutation
-  // definitionTextSelectionDelete({
-  //   localId,
-  //   from,
-  //   to,
-  // }: {
-  //   localId: string
-  //   from: number
-  //   to: number
-  // }) {
-  //   const definitionList = cloneDeep(this._definition)
+  /** remove a text-selection from a definition */
+  @Mutation
+  definitionRangeDelete({
+    localId,
+    from,
+    to,
+  }: {
+    localId: string;
+    from: number;
+    to: number;
+  }) {
+    const definitionList = cloneDeep(this._definition);
 
-  //   const definition = definitionList.find(
-  //     (definition) => definition.localId === localId
-  //   )
+    const definition = definitionList.find(
+      (definition) => definition.localId === localId
+    );
 
-  //   if (definition !== undefined) {
-  //     definition.range = definition.range.filter(
-  //       (range) => range.from !== from || range.to !== to
-  //     )
+    if (definition !== undefined) {
+      definition.range = definition.range.filter(
+        (range) => range.from !== from || range.to !== to
+      );
 
-  //     this._definition = definitionList
-  //   }
-  // }
+      this._definition = definitionList;
+    }
+  }
 
-  // /** add a text-selection to a definition*/
-  // @Mutation
-  // definitionTextSelectionAdd({
-  //   localId,
-  //   textSelection,
-  // }: {
-  //   localId: string
-  //   textSelection: TextSelection[]
-  // }) {
-  //   const definitionList = cloneDeep(this._definition)
-  //   const definition = definitionList.find(
-  //     (definition) => definition.localId === localId
-  //   )
+  /** add a text-selection to a definition*/
+  @Mutation
+  definitionRangeAdd({
+    localId,
+    range,
+  }: {
+    localId: string;
+    range: TextRange[];
+  }) {
+    const definitionList = cloneDeep(this._definition);
+    const definition = definitionList.find(
+      (definition) => definition.localId === localId
+    );
 
-  //   if (definition !== undefined) {
-  //     definition.range.push(...textSelection)
+    if (definition !== undefined) {
+      definition.range.push(...range);
 
-  //     this._definition = definitionList
-  //   }
-  // }
+      this._definition = definitionList;
+    }
+  }
 
   /** return all definitions */
   get definition() {

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.definition-list-item-text-selection
-  span {{textSelection.text}}
+  span {{definitionRange.text}}
   b-icon.icon-delete(
     v-b-tooltip.hover
     title="delete text"
@@ -16,12 +16,12 @@ div.definition-list-item-text-selection
     @ok="deleteText"
     v-model="deleteModalShow"
   )
-    div {{textSelection.text}}
+    div {{definitionRange.text}}
 </template>
 
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
-import { BusEvent, TextSelection } from '~/types/seven-steps';
+import { TextRange } from '~/types/seven-steps';
 
 import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
 
@@ -31,9 +31,9 @@ import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
     BIconXOctagonFill,
   }
 })
-export default class DefinitionlistItemTextSelection extends Vue {
+export default class DefinitionlistItemdefinitionRange extends Vue {
   @Prop({required: true})
-  private readonly textSelection!: TextSelection;
+  private readonly definitionRange!: TextRange;
 
   @Prop({required: true})
   private readonly definitionId!: string;
@@ -41,15 +41,14 @@ export default class DefinitionlistItemTextSelection extends Vue {
   private deleteModalShow: boolean = false;
 
   deleteText() {
-    const message: BusEvent = {
-      header: [{emitter: 'definition-list-item-range'}],
-      payload: {
-        from: this.textSelection.from,
-        to: this.textSelection.to,
+    this.$store.commit(
+      'definitionRangeDelete',
+      {
+        localId: this.definitionId,
+        from: this.definitionRange.from,
+        to: this.definitionRange.to
       }
-    }
-
-    this.$bus.$emit('text-definition-range-delete', message);
+    )
   }
 }
 </script>

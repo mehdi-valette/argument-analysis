@@ -22,9 +22,8 @@ div.definition-list
 
 <script lang="ts">
 import {Vue, Component, Watch} from 'vue-property-decorator';
-import { TextSelection, TextDefinition, BusEvent } from '~/types/seven-steps';
+import { TextDefinition, EventBusMessage } from '~/types/seven-steps';
 import DefinitionListItem from '@/components/DefinitionListItem.vue';
-import {definitionExists} from '@/assets/ts/definition-util';
 
 @Component({
   components: {
@@ -40,7 +39,7 @@ export default class DefinitionList extends Vue {
   }
 
   getDefinition() {
-    const message: BusEvent = {
+    const message: EventBusMessage = {
       header: [{emitter: 'definition-list'}],
       payload: {
         localId: '',
@@ -49,33 +48,8 @@ export default class DefinitionList extends Vue {
     }
 
     this.$bus.$emit(
-      'text-selection-definition-trigger', message
+      'text-definition-add', message
     );
-  }
-
-  mounted() {
-    this.$bus.$on('text-selection-definition-response', (message: BusEvent) => {
-
-      // verify that the event was triggered either
-      // by this component or by the index page (ENTER key)
-      if(!(
-        message.header.length > 0 &&
-        ['definition-list', 'index'].includes(message.header[0].emitter)
-      )) {
-        return;
-      }
-
-      const  newDefinition = message.payload as TextDefinition;
-
-      if(!definitionExists(this.definitionList, newDefinition)) {
-        this.$store.commit('definitionCreate', newDefinition);
-      }
-
-    })
-  }
-
-  beforeDestroy() {
-    this.$bus.$off('text-selection-definition-response');
   }
 }
 </script>
