@@ -7,7 +7,6 @@ div
 import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
 import {Editor, EditorContent} from '@tiptap/vue-2';
 import StarterKit from '@tiptap/starter-kit';
-import Strike from '@tiptap/extension-strike';
 import {Definition} from '@/components/TextEditorDefinition';
 import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
 import cuid from 'cuid';

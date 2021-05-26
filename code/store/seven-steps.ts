@@ -9,6 +9,16 @@ import { TextDefinition, TextRange } from '~/types/seven-steps';
 })
 export default class SevenStep extends VuexModule {
   private _definition: TextDefinition[] = [];
+  private _fileOriginal: File = new File([], '');
+
+  @Mutation
+  fileOriginalCreate(file: File) {
+    this._fileOriginal = file;
+  }
+
+  get fileOriginal() {
+    return this._fileOriginal;
+  }
 
   /** create a new definition */
   @Mutation

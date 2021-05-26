@@ -1,54 +1,88 @@
 <template lang="pug">
-div.index
-  definition-text(text="Dans le monde des chauds et doux chaudoudoux,<p>chaque personne reçoit à la naissance <blockquote>un sac magique.</blockquote><p>Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main,<p>elle en ressort un chaudoudoux.")
-  definition-list
+div.document
+  div.file
+    b-form-file(
+      v-model="file"
+    )
+    object.pdf-viewer(:data="fileData" type="application/pdf")
+  div.editor
+    b-button-group.menu
+      b-button(
+        @click="editor.chain().focus().toggleHeading({level: 1}).run()"
+      ) title
+      b-button(
+        @click="editor.chain().focus().toggleBulletList().run()"
+      ) bullet list
+    editor-content.content(:editor="editor")
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import DefinitionText from '~/components/DefinitionText.vue';
-import DefinitionList from '~/components/DefinitionList.vue';
-import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
+import {Vue, Component, Watch} from 'vue-property-decorator';
+import {Editor, EditorContent} from '@tiptap/vue-2';
+import StarterKit from '@tiptap/starter-kit';
 
 @Component({
   components: {
-    DefinitionText,
-    DefinitionList
+    EditorContent
   }
 })
 export default class Index extends Vue {
-  mounted() {
-      window.addEventListener('keydown', this.keyboardHandler);
-  }
+  private file: File = new File([], '');
 
-  beforeDestroy() {
-      window.removeEventListener('keydown', this.keyboardHandler);
-  }
+  private editor: Editor = new Editor({
+    content: 'text',
+    extensions: [StarterKit]
+  });
 
-  keyboardHandler(event: KeyboardEvent) {
-    if(event.key === "Enter" && event.ctrlKey === false) {
-      const message: EventBusMessage = {
-        header: [{emitter: 'index'}],
-        payload: {
-          localId: '',
-          definition: '',
-          range: []
-        } as TextDefinition
-      }
-
-      this.$bus.$emit('text-definition-add', message);
+  @Watch('file')
+  async onFile() {
+    if(this.file.name !== undefined && this.file.name !== ''){
+      this.$store.commit('fileOriginalCreate', this.file);
     }
+  }
+
+  get fileData() {
+    const fileStore: File = this.$store.getters['fileOriginal'];
+    let returnValue = ''
+
+    if(fileStore.name !== undefined && fileStore.name !== '') {
+      returnValue = URL.createObjectURL(fileStore);
+    }
+
+    return returnValue;
   }
 }
 </script>
 
-<style lang="scss">
-.index {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1em;
-  padding: 1em;
-  align-content: stretch;
-  height: 100%;
-}
+<style lang="scss" scoped>
+  .document {
+    display: flex;
+    height: 100%;
+
+    .file {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      width: 50%;
+
+      .pdf-viewer {
+        flex-grow: 1;
+      }
+    }
+
+    .editor {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid black;
+      flex-grow: 1;
+      overflow: auto;
+      width: 50%;
+
+      .menu {}
+
+      .content {
+        padding: 1em;
+      }
+    }
+  }
 </style>
