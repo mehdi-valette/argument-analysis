@@ -1,6 +1,6 @@
 <template lang="pug">
 div.index
-  definition-text(text="Dans le monde des chauds et doux chaudoudoux,<p>chaque personne reçoit à la naissance <blockquote>un sac magique.</blockquote><p>Bien que le sac semble vide, à chaque fois que sa propriétaire y plonge la main,<p>elle en ressort un chaudoudoux.")
+  definition-text(:text="text")
   definition-list
 </template>
 
@@ -17,12 +17,24 @@ import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
   }
 })
 export default class Definition extends Vue {
+
+  get text() {
+    const textAnnotated = this.$store.getters['textAnnotated'];
+    const textOriginal = this.$store.getters['textOriginal'];
+
+    if(Object.keys(textAnnotated).length === 0) {
+      this.$store.commit('textAnnotatedUpdate', textOriginal);
+    }
+
+    return textAnnotated;
+  }
+
   mounted() {
-      window.addEventListener('keydown', this.keyboardHandler);
+    window.addEventListener('keydown', this.keyboardHandler);
   }
 
   beforeDestroy() {
-      window.removeEventListener('keydown', this.keyboardHandler);
+    window.removeEventListener('keydown', this.keyboardHandler);
   }
 
   keyboardHandler(event: KeyboardEvent) {
@@ -49,6 +61,6 @@ export default class Definition extends Vue {
   grid-gap: 1em;
   padding: 1em;
   align-content: stretch;
-  height: 100%;
+  min-height: 0;
 }
 </style>

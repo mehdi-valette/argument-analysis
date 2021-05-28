@@ -20,7 +20,7 @@ import { definitionExists, getDefinitionEditor } from '~/assets/ts/definition-ut
 })
 export default class TextEditor extends Vue {
   @Prop({default: ''})
-  private readonly text!: string;
+  private readonly text!: any;
 
   private editor: Editor = new Editor({
     content: cloneDeep(this.text),
@@ -37,7 +37,7 @@ export default class TextEditor extends Vue {
   }
 
   @Watch('definitionList')
-  onDefinitionnChange(newVale: TextDefinition[], oldValue: TextDefinition[]) {
+  onDefinitionChange(newVale: TextDefinition[], oldValue: TextDefinition[]) {
     
     // get definitions from editor as a map
     const mapEditor = getDefinitionEditor(this.editor);
@@ -102,6 +102,7 @@ export default class TextEditor extends Vue {
   }
  
   mounted() {
+    this.editor.commands.setContent(this.text);
 
     /** mark the selected text as a definition */
     this.$bus.$on('text-definition-add', (message: EventBusMessage) => {
@@ -126,7 +127,7 @@ export default class TextEditor extends Vue {
       };
 
       // add/update the new definition if the range doesn't intersect an existing definition
-      if(!definitionExists(this.definitionList, definition)) {
+      if(!definitionExists(this.definitionList, definition) && selection.from !== selection.to) {
         if(message.payload.localId === '') {
           this.$store.commit('definitionCreate', definition);
         } else {

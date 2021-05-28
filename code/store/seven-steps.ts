@@ -10,6 +10,8 @@ import { TextDefinition, TextRange } from '~/types/seven-steps';
 export default class SevenStep extends VuexModule {
   private _definition: TextDefinition[] = [];
   private _fileOriginal: File = new File([], '');
+  private _textOriginal: any = {};
+  private _textAnnotated = {};
 
   @Mutation
   fileOriginalCreate(file: File) {
@@ -18,6 +20,24 @@ export default class SevenStep extends VuexModule {
 
   get fileOriginal() {
     return this._fileOriginal;
+  }
+
+  get textAnnotated() {
+    return this._textAnnotated;
+  }
+
+  @Mutation
+  textOriginalUpdate(text: any) {
+    this._textOriginal = cloneDeep(text);
+  }
+
+  @Mutation
+  textAnnotatedUpdate(text: any) {
+    this._textAnnotated = cloneDeep(text);
+  }
+
+  get textOriginal() {
+    return this._textOriginal;
   }
 
   /** create a new definition */

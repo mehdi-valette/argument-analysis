@@ -34,6 +34,22 @@ export default class Index extends Vue {
     extensions: [StarterKit]
   });
 
+  get editorJson() {
+    return this.editor.getJSON();
+  }
+
+  mounted() {
+    const text = this.$store.getters['textOriginal'];
+    this.editor.commands.setContent(text);
+  }
+
+  @Watch('editorJson')
+  onEditorChange(newValue: any, oldValue: any) {
+    if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      this.$store.commit('textOriginalUpdate', newValue);
+    }
+  }
+
   @Watch('file')
   async onFile() {
     if(this.file.name !== undefined && this.file.name !== ''){
@@ -57,7 +73,7 @@ export default class Index extends Vue {
 <style lang="scss" scoped>
   .document {
     display: flex;
-    height: 100%;
+    min-height: 0;
 
     .file {
       display: flex;
