@@ -18,7 +18,7 @@ div.document
   b-modal(
     v-model="modalRouteLeave" title="Leaving the step 'file'"
     ok-title="continue"
-    @ok="routeLeave"
+    @ok="routeLeaveConfirmed"
   )
     template
       p The edited text here will be copied to the annotated text, which will be used in the next steps. However this can happen only once.
@@ -58,7 +58,8 @@ export default class Index extends Vue {
     extensions: [StarterKit]
   });
 
-  routeLeave() {
+  /** called when the popup to confirm the route leave is validated */
+  routeLeaveConfirmed() {
     this.routeConfirmed = true;
     if(Object.keys(this.$store.getters['textAnnotated']).length === 0) {
       this.$store.commit('textAnnotatedUpdate', this.editorJson);
@@ -66,15 +67,18 @@ export default class Index extends Vue {
     this.$router.push(this.routeNext);
   }
 
+  /** return a JSON version of the editor's state */
   get editorJson() {
     return this.editor.getJSON();
   }
 
+  /** get the text that is in Vuex (useful when coming back to this step) */
   mounted() {
     const text = this.$store.getters['textOriginal'];
     this.editor.commands.setContent(text);
   }
 
+  /** Update the text in Vuex when the text in the editor is changed */
   @Watch('editorJson')
   onEditorChange(newValue: any, oldValue: any) {
     if(JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
@@ -82,6 +86,7 @@ export default class Index extends Vue {
     }
   }
 
+  /** Update the file in Vuex when a new file is chosen */
   @Watch('file')
   async onFile() {
     if(this.file.name !== undefined && this.file.name !== ''){
@@ -89,6 +94,7 @@ export default class Index extends Vue {
     }
   }
 
+  /** Transform a PDF file into an URL object that can be passed to the tab 'object' */
   get fileData() {
     const fileStore: File = this.$store.getters['fileOriginal'];
     let returnValue = ''

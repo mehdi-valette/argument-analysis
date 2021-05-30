@@ -1,11 +1,10 @@
-import { TextClarification, TextRange } from '@/types/seven-steps';
+import { TextExtension, TextRange } from '@/types/seven-steps';
 import { Editor } from '@tiptap/core';
-import { cloneDeep } from 'lodash';
 
 /** check whether a text selected in a new clarification already exists */
 export function clarificationExists(
-  clarificationList: TextClarification[],
-  newClarification: TextClarification
+  clarificationList: TextExtension[],
+  newClarification: TextExtension
 ) {
   let returnValue = true;
 
@@ -37,47 +36,47 @@ export function clarificationExists(
 }
 
 /** get the clarifications from a Tiptap editor */
-export function getClarificationEditorOld(editor: Editor) {
-  const root = editor.getJSON();
-  const elementList: Record<string, any>[] = [root];
-  const clarificationMap = new Map<string, TextClarification>();
+// export function getClarificationEditorOld(editor: Editor) {
+//   const root = editor.getJSON();
+//   const elementList: Record<string, any>[] = [root];
+//   const clarificationMap = new Map<string, TextClarification>();
 
-  for (const element of elementList) {
-    // the element is of type "block", add its children to the nodes' list
-    if (element.content !== undefined) {
-      elementList.push(...element.content);
+//   for (const element of elementList) {
+//     // the element is of type "block", add its children to the nodes' list
+//     if (element.content !== undefined) {
+//       elementList.push(...element.content);
 
-      // the element is of type text and has some marks, analyse the marks
-    } else if (element.type === 'text' && element.marks !== undefined) {
-      // for each "clarification" mark
-      const clarifications = element.marks
-        .filter((m: { type: string }) => m.type === 'clarification')
-        .forEach((mark: any) => {
-          // get or create the basic clarification into clarificationMap
-          let clarification = clarificationMap.get(mark.attrs.id);
+//       // the element is of type text and has some marks, analyse the marks
+//     } else if (element.type === 'text' && element.marks !== undefined) {
+//       // for each "clarification" mark
+//       const clarifications = element.marks
+//         .filter((m: { type: string }) => m.type === 'clarification')
+//         .forEach((mark: any) => {
+//           // get or create the basic clarification into clarificationMap
+//           let clarification = clarificationMap.get(mark.attrs.id);
 
-          if (clarification === undefined) {
-            clarification = {
-              localId: mark.attrs.id,
-              clarification: mark.attrs.clarification,
-              range: [],
-            };
+//           if (clarification === undefined) {
+//             clarification = {
+//               localId: mark.attrs.id,
+//               clarification: mark.attrs.clarification,
+//               range: [],
+//             };
 
-            clarificationMap.set(mark.attrs.id, clarification);
-          }
+//             clarificationMap.set(mark.attrs.id, clarification);
+//           }
 
-          // push the range to the clarification
-          clarification.range.push({
-            from: mark.attrs.from,
-            to: mark.attrs.to,
-            text: element.text,
-          });
-        });
-    }
-  }
+//           // push the range to the clarification
+//           clarification.range.push({
+//             from: mark.attrs.from,
+//             to: mark.attrs.to,
+//             text: element.text,
+//           });
+//         });
+//     }
+//   }
 
-  return [...clarificationMap.values()];
-}
+//   return [...clarificationMap.values()];
+// }
 
 /** get the clarifications from a Tiptap editor */
 export function getClarificationEditor(editor: Editor) {
@@ -133,34 +132,34 @@ export function getClarificationEditor(editor: Editor) {
 }
 
 /** indicate if a clarification already exists */
-export function clarificationExistsOld(
-  editor: Editor,
-  clarificationRange: TextClarification
-) {
-  let returnValue = false;
-  const root = editor.getJSON();
-  const elementList: Record<string, any>[] = [root];
+// export function clarificationExistsOld(
+//   editor: Editor,
+//   clarificationRange: TextClarification
+// ) {
+//   let returnValue = false;
+//   const root = editor.getJSON();
+//   const elementList: Record<string, any>[] = [root];
 
-  for (const element of elementList) {
-    // the element is of type "block", add its children to the nodes' list
-    if (element.content !== undefined) {
-      elementList.push(...element.content);
+//   for (const element of elementList) {
+//     // the element is of type "block", add its children to the nodes' list
+//     if (element.content !== undefined) {
+//       elementList.push(...element.content);
 
-      // the element is of type text and has some marks, analyse the marks
-    } else if (element.type === 'text' && element.marks !== undefined) {
-      // for each "clarification" mark, verify if the new range is within that clarification
-      const clarifications = element.marks
-        .filter((m: { type: string }) => m.type === 'clarification')
-        .forEach((element: any) => {
-          if (
-            element.attrs.from < clarificationRange.range[0].to &&
-            element.attrs.to > clarificationRange.range[0].from
-          ) {
-            returnValue = true;
-          }
-        });
-    }
-  }
+//       // the element is of type text and has some marks, analyse the marks
+//     } else if (element.type === 'text' && element.marks !== undefined) {
+//       // for each "clarification" mark, verify if the new range is within that clarification
+//       const clarifications = element.marks
+//         .filter((m: { type: string }) => m.type === 'clarification')
+//         .forEach((element: any) => {
+//           if (
+//             element.attrs.from < clarificationRange.range[0].to &&
+//             element.attrs.to > clarificationRange.range[0].from
+//           ) {
+//             returnValue = true;
+//           }
+//         });
+//     }
+//   }
 
-  return returnValue;
-}
+//   return returnValue;
+// }

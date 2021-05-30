@@ -51,7 +51,6 @@ export default class Clarification extends Vue {
 .index {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1em;
   align-content: stretch;
   min-height: 0;
 }

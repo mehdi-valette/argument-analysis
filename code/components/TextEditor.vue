@@ -28,14 +28,17 @@ export default class TextEditor extends Vue {
     editable: false,
   });
 
+  /** return a JSON version of the text */
   get editorJson() {
     return this.editor.getJSON();
   }
 
+  /** get the list of clarifications from Vuex */
   get clarificationList() {
     return this.$store.getters['clarification'] as TextClarification[];
   }
 
+  /** When the list of clarifications changes the text is updated accordingly */
   @Watch('clarificationList')
   onClarificationChange(newVale: TextClarification[], oldValue: TextClarification[]) {
     
@@ -95,7 +98,7 @@ export default class TextEditor extends Vue {
     });
   }
 
-
+  // destroy the editor and stop listening to the events
   beforeDestroy() {
     this.editor.destroy();
     this.$bus.$off('text-clarification-add');
@@ -104,37 +107,68 @@ export default class TextEditor extends Vue {
   mounted() {
     this.editor.commands.setContent(this.text);
 
-    /** mark the selected text as a clarification */
-    this.$bus.$on('text-clarification-add', (message: EventBusMessage) => {
-      const selection = this.editor.state.selection;
-      const doc = this.editor.state.doc;
-      const textSelected = doc.textBetween(selection.from, selection.to);
+    // mark the selected text as a clarification
+    this.$bus.$on('text-clarification-add', this.onTextClarificationAdd);
+  }
 
-      const localId =
-        message.payload.localId === '' ?
-          cuid() :
-          message.payload.localId;
+  /** mark the selected text as a clarification
+   * Either create a new clarification, or add a range
+   * to an existing clarification.
+   */
+  onTextClarificationAdd(message: EventBusMessage) {
 
-      const range = [{
-        from: selection.from,
-        to: selection.to, text: textSelected
-      }];
+    // gather information about the selection
+    const selection = this.editor.state.selection;
+    const doc = this.editor.state.doc;
+    const textSelected = doc.textBetween(selection.from, selection.to);
 
-      const clarification: TextClarification = {
-        localId,
-        range,
-        clarification: message.payload.clarification
-      };
+    // chooses the clarification's localId
+    // We're adding a range to an existing clarification:
+    //  -> use the localId of the existing clarification
+    // New clarification:
+    //  -> create a new cuid
+    const localId =
+      message.payload.localId === '' ?
+        cuid() :
+        message.payload.localId;
 
-      // add/update the new clarification if the range doesn't intersect an existing clarification
-      if(!clarificationExists(this.clarificationList, clarification) && selection.from !== selection.to) {
+    // prepare the range of the clarification
+    const range = [{
+      from: selection.from,
+      to: selection.to,
+      text: textSelected
+    }];
+
+    // prepare the clarification
+    const clarification: TextClarification = {
+      localId,
+      range,
+      clarification: message.payload.clarification
+    };
+
+    // add/update the new clarification if the range doesn't intersect with an existing clarification's range
+    if(
+      !clarificationExists(
+        this.clarificationList,
+        clarification
+      ) &&
+        selection.from !== selection.to
+      ) {
         if(message.payload.localId === '') {
-          this.$store.commit('clarificationCreate', clarification);
+          this.$store.commit(
+            'clarificationCreate',
+            clarification
+          );
         } else {
-          this.$store.commit('clarificationRangeAdd', {localId: clarification.localId, range: clarification.range})
+          this.$store.commit(
+            'clarificationRangeAdd',
+            {
+              localId: clarification.localId,
+              range: clarification.range
+            }
+          )
         }
-      }
-    });
+    }
   }
 
 }

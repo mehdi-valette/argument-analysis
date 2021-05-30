@@ -4,10 +4,13 @@ export interface TextRange {
   text: string;
 }
 
-export interface TextClarification {
+export interface TextExtension {
   localId: string;
   databaseId?: string;
   range: TextRange[];
+}
+
+export interface TextClarification extends TextExtension {
   clarification: string;
 }
 
