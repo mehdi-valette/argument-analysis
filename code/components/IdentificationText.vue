@@ -7,11 +7,11 @@ div
 import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
 import {Editor, EditorContent} from '@tiptap/vue-2';
 import StarterKit from '@tiptap/starter-kit';
-import {Clarification} from '~/components/TextEditorClarification';
-import { EventBusMessage, TextClarification } from '~/types/seven-steps';
+import {Claim as TextEditorClaim} from '~/components/TextEditorClaim';
+import { EventBusMessage, TextClaim } from '~/types/seven-steps';
 import cuid from 'cuid';
 import cloneDeep from 'lodash.clonedeep';
-import { clarificationExists, getClarificationEditor } from '~/assets/ts/clarification-util';
+import { rangeExists, getClarificationEditor } from '~/assets/ts/clarification-util';
 
 @Component({
   components: {
@@ -24,7 +24,7 @@ export default class TextEditor extends Vue {
 
   private editor: Editor = new Editor({
     content: cloneDeep(this.text),
-    extensions: [StarterKit, Clarification],
+    extensions: [StarterKit, TextEditorClaim],
     editable: false,
   });
 
@@ -148,7 +148,7 @@ export default class TextEditor extends Vue {
 
     // add/update the new clarification if the range doesn't intersect with an existing clarification's range
     if(
-      !clarificationExists(
+      !rangeExists(
         this.clarificationList,
         clarification
       ) &&
