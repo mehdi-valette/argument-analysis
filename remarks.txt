@@ -1,0 +1,2 @@
+Identification*.vue are to be updated.
+In Vuex, many of the functions between Claim/Identificaiton and Clarification are very similar. Create generic functions for that.
