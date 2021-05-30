@@ -14,6 +14,13 @@ div.document
         @click="editor.chain().focus().toggleBulletList().run()"
       ) bullet list
     editor-content.content(:editor="editor")
+  
+  b-modal(
+    v-model="modalRouteLeave" title="leaving the step 'file'"
+    ok-title="continue"
+    @ok="routeLeave"
+  )
+    div We will not be able to edit the text after this. Do you want to continue?
 </template>
 
 <script lang="ts">
@@ -22,17 +29,36 @@ import {Editor, EditorContent} from '@tiptap/vue-2';
 import StarterKit from '@tiptap/starter-kit';
 
 @Component({
+  beforeRouteLeave(to, from, next) {
+    const that: any = this;
+
+    if(that.routeConfirmed) {
+      console.log('route confirmed');
+      next();
+    } else {
+      that.routeNext = to;
+      that.modalRouteLeave = true;
+    }
+  },
   components: {
     EditorContent
   }
 })
 export default class Index extends Vue {
   private file: File = new File([], '');
+  private modalRouteLeave: boolean = false;
+  private routeNext: any = {};
+  private routeConfirmed: boolean = false;
 
   private editor: Editor = new Editor({
     content: 'text',
     extensions: [StarterKit]
   });
+
+  routeLeave() {
+    this.routeConfirmed = true;
+    this.$router.push(this.routeNext);
+  }
 
   get editorJson() {
     return this.editor.getJSON();
@@ -91,13 +117,13 @@ export default class Index extends Vue {
       flex-direction: column;
       border: 1px solid black;
       flex-grow: 1;
-      overflow: auto;
       width: 50%;
 
       .menu {}
 
       .content {
         padding: 1em;
+        overflow: auto;
       }
     }
   }

@@ -59,7 +59,6 @@ export default class Definition extends Vue {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1em;
-  padding: 1em;
   align-content: stretch;
   min-height: 0;
 }

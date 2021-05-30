@@ -19,6 +19,9 @@ export default class LayoutDefault extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "@/node_modules/bootstrap/scss/functions";
+@import "@/node_modules/bootstrap/scss/variables";
+
 body {
   .layout {
     height: 100vh;
@@ -38,9 +41,15 @@ body {
       .step {
         padding: .3em 3em;
         border: 1px solid black;
-        border-radius: 2em;
+        border-radius: .5em 2em 2em .5em;
         margin-right: -2em;
-        background-color: white;
+        background-color: $info;
+        color: white;
+
+        &.nuxt-link-active {
+          z-index: 100;
+          background-color: $primary
+        }
       }
     }
   }
