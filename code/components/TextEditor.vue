@@ -7,11 +7,11 @@ div
 import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
 import {Editor, EditorContent} from '@tiptap/vue-2';
 import StarterKit from '@tiptap/starter-kit';
-import {Definition} from '@/components/TextEditorDefinition';
-import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
+import {Clarification} from '~/components/TextEditorClarification';
+import { EventBusMessage, TextClarification } from '~/types/seven-steps';
 import cuid from 'cuid';
 import cloneDeep from 'lodash.clonedeep';
-import { definitionExists, getDefinitionEditor } from '~/assets/ts/definition-util';
+import { clarificationExists, getClarificationEditor } from '~/assets/ts/clarification-util';
 
 @Component({
   components: {
@@ -24,7 +24,7 @@ export default class TextEditor extends Vue {
 
   private editor: Editor = new Editor({
     content: cloneDeep(this.text),
-    extensions: [StarterKit, Definition],
+    extensions: [StarterKit, Clarification],
     editable: false,
   });
 
@@ -32,19 +32,19 @@ export default class TextEditor extends Vue {
     return this.editor.getJSON();
   }
 
-  get definitionList() {
-    return this.$store.getters['definition'] as TextDefinition[];
+  get clarificationList() {
+    return this.$store.getters['clarification'] as TextClarification[];
   }
 
-  @Watch('definitionList')
-  onDefinitionChange(newVale: TextDefinition[], oldValue: TextDefinition[]) {
+  @Watch('clarificationList')
+  onClarificationChange(newVale: TextClarification[], oldValue: TextClarification[]) {
     
-    // get definitions from editor as a map
-    const mapEditor = getDefinitionEditor(this.editor);
+    // get clarifications from editor as a map
+    const mapEditor = getClarificationEditor(this.editor);
 
-    // get definitions from Vuex and convert to map
-    const mapVuex = new Map<string, {id: string, from: number, to: number, definition: string}>();
-    this.definitionList.forEach(defVuex => {
+    // get clarifications from Vuex and convert to map
+    const mapVuex = new Map<string, {id: string, from: number, to: number, clarification: string}>();
+    this.clarificationList.forEach(defVuex => {
       defVuex.range.forEach(rangeVuex => {
         mapVuex.set(
           `${rangeVuex.from}-${rangeVuex.to}`,
@@ -52,7 +52,7 @@ export default class TextEditor extends Vue {
             id: defVuex.localId,
             from: rangeVuex.from,
             to: rangeVuex.to,
-            definition: defVuex.definition
+            clarification: defVuex.clarification
           }
         );
       })
@@ -62,7 +62,7 @@ export default class TextEditor extends Vue {
     mapEditor.forEach((defEditor, key) => {
       if(mapVuex.get(key) === undefined) {
         this.editor.commands.setTextSelection({from: defEditor.from, to: defEditor.to});
-        this.editor.commands.unsetDefinition();
+        this.editor.commands.unsetClarification();
       }
     })
 
@@ -74,21 +74,21 @@ export default class TextEditor extends Vue {
       if(defEditor === undefined) {
         this.editor.commands.setTextSelection({from: defVuex.from, to: defVuex.to});
 
-        this.editor.commands.setDefinition({
+        this.editor.commands.setClarification({
           id: defVuex.id,
           from: defVuex.from,
           to: defVuex.to,
-          definition: defVuex.definition,
+          clarification: defVuex.clarification,
         });
 
       // update marks that exist but aren't up-to-date
       } else if(
         defVuex.id !== defEditor.id ||
-        defVuex.definition !== defEditor.definition
+        defVuex.clarification !== defEditor.clarification
       ) {
         this.editor.commands.setTextSelection({from: defVuex.from, to: defVuex.to});
-        this.editor.commands.updateAttributes('definition', {
-          definition: defVuex.definition,
+        this.editor.commands.updateAttributes('clarification', {
+          clarification: defVuex.clarification,
           id: defVuex.id
         });
       }
@@ -98,14 +98,14 @@ export default class TextEditor extends Vue {
 
   beforeDestroy() {
     this.editor.destroy();
-    this.$bus.$off('text-definition-add');
+    this.$bus.$off('text-clarification-add');
   }
  
   mounted() {
     this.editor.commands.setContent(this.text);
 
-    /** mark the selected text as a definition */
-    this.$bus.$on('text-definition-add', (message: EventBusMessage) => {
+    /** mark the selected text as a clarification */
+    this.$bus.$on('text-clarification-add', (message: EventBusMessage) => {
       const selection = this.editor.state.selection;
       const doc = this.editor.state.doc;
       const textSelected = doc.textBetween(selection.from, selection.to);
@@ -120,18 +120,18 @@ export default class TextEditor extends Vue {
         to: selection.to, text: textSelected
       }];
 
-      const definition: TextDefinition = {
+      const clarification: TextClarification = {
         localId,
         range,
-        definition: message.payload.definition
+        clarification: message.payload.clarification
       };
 
-      // add/update the new definition if the range doesn't intersect an existing definition
-      if(!definitionExists(this.definitionList, definition) && selection.from !== selection.to) {
+      // add/update the new clarification if the range doesn't intersect an existing clarification
+      if(!clarificationExists(this.clarificationList, clarification) && selection.from !== selection.to) {
         if(message.payload.localId === '') {
-          this.$store.commit('definitionCreate', definition);
+          this.$store.commit('clarificationCreate', clarification);
         } else {
-          this.$store.commit('definitionRangeAdd', {localId: definition.localId, range: definition.range})
+          this.$store.commit('clarificationRangeAdd', {localId: clarification.localId, range: clarification.range})
         }
       }
     });
@@ -142,7 +142,7 @@ export default class TextEditor extends Vue {
 
 <style lang="scss">
 .ProseMirror {
-  .definition {
+  .clarification {
     text-decoration: underline;
     text-decoration-style: dotted;
   }

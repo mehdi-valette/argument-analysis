@@ -4,11 +4,11 @@ export interface TextRange {
   text: string;
 }
 
-export interface TextDefinition {
+export interface TextClarification {
   localId: string;
   databaseId?: string;
   range: TextRange[];
-  definition: string;
+  clarification: string;
 }
 
 export interface EventBusMessage {

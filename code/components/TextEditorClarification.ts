@@ -6,34 +6,34 @@ import {
   mergeAttributes,
 } from '@tiptap/core';
 
-export interface DefinitionOptions {
+export interface ClarificationOptions {
   HTMLAttributes: Record<string, any>;
   id: string;
   from: number;
   to: number;
-  definition: string;
+  clarification: string;
 }
 
 declare module '@tiptap/core' {
   interface Commands {
-    definition: {
+    clarification: {
       /**
-       * Set a definition mark
+       * Set a clarification mark
        */
-      setDefinition: (attributes: {
+      setClarification: (attributes: {
         id: string;
         from: number;
         to: number;
-        definition: string;
+        clarification: string;
       }) => Command;
       /**
-       * Toggle a definition mark
+       * Toggle a clarification mark
        */
-      toggleDefinition: () => Command;
+      toggleClarification: () => Command;
       /**
-       * Unset a definition mark
+       * Unset a clarification mark
        */
-      unsetDefinition: () => Command;
+      unsetClarification: () => Command;
     };
   }
 }
@@ -43,17 +43,17 @@ export const starPasteRegex = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/gm;
 export const underscoreInputRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/gm;
 export const underscorePasteRegex = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/gm;
 
-export const Definition = Mark.create<DefinitionOptions>({
-  name: 'definition',
+export const Clarification = Mark.create<ClarificationOptions>({
+  name: 'clarification',
 
   defaultOptions: {
     HTMLAttributes: {
-      class: 'definition',
+      class: 'clarification',
     },
     id: '',
     from: -1,
     to: -1,
-    definition: '',
+    clarification: '',
   },
 
   parseHTML() {
@@ -61,7 +61,7 @@ export const Definition = Mark.create<DefinitionOptions>({
       {
         tag: 'span',
         getAttrs: (node) =>
-          (node as HTMLElement).dataset['definition'] !== undefined && null,
+          (node as HTMLElement).dataset['clarification'] !== undefined && null,
       },
     ];
   },
@@ -80,7 +80,7 @@ export const Definition = Mark.create<DefinitionOptions>({
         default: -1,
         rendered: false,
       },
-      definition: {
+      clarification: {
         default: '',
         rendered: false,
       },
@@ -91,7 +91,7 @@ export const Definition = Mark.create<DefinitionOptions>({
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, {
-        title: mark.attrs.definition,
+        title: mark.attrs.clarification,
       }),
       0,
     ];
@@ -99,27 +99,27 @@ export const Definition = Mark.create<DefinitionOptions>({
 
   addCommands() {
     return {
-      setDefinition:
+      setClarification:
         (attributes) =>
         ({ commands }) => {
-          return commands.setMark('definition', attributes);
+          return commands.setMark('clarification', attributes);
         },
-      toggleDefinition:
+      toggleClarification:
         () =>
         ({ commands }) => {
-          return commands.toggleMark('definition');
+          return commands.toggleMark('clarification');
         },
-      unsetDefinition:
+      unsetClarification:
         () =>
         ({ commands }) => {
-          return commands.unsetMark('definition');
+          return commands.unsetMark('clarification');
         },
     };
   },
 
   addKeyboardShortcuts() {
     return {
-      'Mod-b': () => this.editor.commands.toggleDefinition(),
+      'Mod-b': () => this.editor.commands.toggleClarification(),
     };
   },
 

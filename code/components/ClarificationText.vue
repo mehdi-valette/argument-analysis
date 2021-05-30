@@ -1,5 +1,5 @@
 <template lang="pug">
-div.text-definition
+div.text-clarification
   text-editor(:text="text")
 </template>
 
@@ -12,14 +12,14 @@ import TextEditor from '@/components/TextEditor.vue';
     TextEditor
   }
 })
-export default class DefinitionText extends Vue {
+export default class ClarificationText extends Vue {
   @Prop({default: ''})
   private readonly text!: string;
 }
 </script>
 
 <style lang="scss" scoped>
-.text-definition {
+.text-clarification {
   position: relative;
   display: flex;
   flex-direction: column;

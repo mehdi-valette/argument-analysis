@@ -1,23 +1,23 @@
-import { TextDefinition, TextRange } from '@/types/seven-steps';
+import { TextClarification, TextRange } from '@/types/seven-steps';
 import { Editor } from '@tiptap/core';
 import { cloneDeep } from 'lodash';
 
-/** check whether a text selected in a new definition already exists */
-export function definitionExists(
-  definitionList: TextDefinition[],
-  newDefinition: TextDefinition
+/** check whether a text selected in a new clarification already exists */
+export function clarificationExists(
+  clarificationList: TextClarification[],
+  newClarification: TextClarification
 ) {
   let returnValue = true;
 
-  // aggregate all the ranges in the "definition" database
+  // aggregate all the ranges in the "clarification" database
   const allRange: TextRange[] = [];
-  definitionList.forEach((definition) => {
-    allRange.push(...definition.range);
+  clarificationList.forEach((clarification) => {
+    allRange.push(...clarification.range);
   });
 
   // verify if one of the ranges in the new selection
   // overlaps with an existing range
-  const overlap = newDefinition.range.find((newRange) => {
+  const overlap = newClarification.range.find((newRange) => {
     // look for a range that overlaps
     const overlappingRange = allRange.find(
       (range) => !(newRange.to <= range.from || newRange.from >= range.to)
@@ -28,7 +28,7 @@ export function definitionExists(
     return overlappingRange !== undefined;
   });
 
-  // add the definition if there's no overlap with an existing range
+  // add the clarification if there's no overlap with an existing range
   if (overlap === undefined) {
     returnValue = false;
   }
@@ -36,11 +36,11 @@ export function definitionExists(
   return returnValue;
 }
 
-/** get the definitions from a Tiptap editor */
-export function getDefinitionEditorOld(editor: Editor) {
+/** get the clarifications from a Tiptap editor */
+export function getClarificationEditorOld(editor: Editor) {
   const root = editor.getJSON();
   const elementList: Record<string, any>[] = [root];
-  const definitionMap = new Map<string, TextDefinition>();
+  const clarificationMap = new Map<string, TextClarification>();
 
   for (const element of elementList) {
     // the element is of type "block", add its children to the nodes' list
@@ -49,25 +49,25 @@ export function getDefinitionEditorOld(editor: Editor) {
 
       // the element is of type text and has some marks, analyse the marks
     } else if (element.type === 'text' && element.marks !== undefined) {
-      // for each "definition" mark
-      const definitions = element.marks
-        .filter((m: { type: string }) => m.type === 'definition')
+      // for each "clarification" mark
+      const clarifications = element.marks
+        .filter((m: { type: string }) => m.type === 'clarification')
         .forEach((mark: any) => {
-          // get or create the basic definition into definitionMap
-          let definition = definitionMap.get(mark.attrs.id);
+          // get or create the basic clarification into clarificationMap
+          let clarification = clarificationMap.get(mark.attrs.id);
 
-          if (definition === undefined) {
-            definition = {
+          if (clarification === undefined) {
+            clarification = {
               localId: mark.attrs.id,
-              definition: mark.attrs.definition,
+              clarification: mark.attrs.clarification,
               range: [],
             };
 
-            definitionMap.set(mark.attrs.id, definition);
+            clarificationMap.set(mark.attrs.id, clarification);
           }
 
-          // push the range to the definition
-          definition.range.push({
+          // push the range to the clarification
+          clarification.range.push({
             from: mark.attrs.from,
             to: mark.attrs.to,
             text: element.text,
@@ -76,16 +76,16 @@ export function getDefinitionEditorOld(editor: Editor) {
     }
   }
 
-  return [...definitionMap.values()];
+  return [...clarificationMap.values()];
 }
 
-/** get the definitions from a Tiptap editor */
-export function getDefinitionEditor(editor: Editor) {
+/** get the clarifications from a Tiptap editor */
+export function getClarificationEditor(editor: Editor) {
   const root = editor.getJSON();
   const elementList: Record<string, any>[] = [root];
-  const definitionMap = new Map<
+  const clarificationMap = new Map<
     string,
-    { id: string; from: number; to: number; definition: string }
+    { id: string; from: number; to: number; clarification: string }
   >();
 
   for (const element of elementList) {
@@ -95,32 +95,32 @@ export function getDefinitionEditor(editor: Editor) {
 
       // the element is of type text and has some marks, analyse the marks
     } else if (element.type === 'text' && element.marks !== undefined) {
-      // for each "definition" mark
-      const definitions = element.marks
-        .filter((m: { type: string }) => m.type === 'definition')
+      // for each "clarification" mark
+      const clarifications = element.marks
+        .filter((m: { type: string }) => m.type === 'clarification')
         .forEach((mark: any) => {
-          definitionMap.set(`${mark.attrs.from}-${mark.attrs.to}`, {
+          clarificationMap.set(`${mark.attrs.from}-${mark.attrs.to}`, {
             id: mark.attrs.id,
             from: mark.attrs.from,
             to: mark.attrs.to,
-            definition: mark.attrs.definition,
+            clarification: mark.attrs.clarification,
           });
 
-          // // get or create the basic definition into definitionMap
-          // let definition = definitionMap.get(mark.attrs.id);
+          // // get or create the basic clarification into clarificationMap
+          // let clarification = clarificationMap.get(mark.attrs.id);
 
-          // if (definition === undefined) {
-          //   definition = {
+          // if (clarification === undefined) {
+          //   clarification = {
           //     localId: mark.attrs.id,
-          //     definition: mark.attrs.definition,
+          //     clarification: mark.attrs.clarification,
           //     range: [],
           //   };
 
-          //   definitionMap.set(mark.attrs.id, definition);
+          //   clarificationMap.set(mark.attrs.id, clarification);
           // }
 
-          // // push the range to the definition
-          // definition.range.push({
+          // // push the range to the clarification
+          // clarification.range.push({
           //   from: mark.attrs.from,
           //   to: mark.attrs.to,
           //   text: element.text,
@@ -129,13 +129,13 @@ export function getDefinitionEditor(editor: Editor) {
     }
   }
 
-  return definitionMap;
+  return clarificationMap;
 }
 
-/** indicate if a definition already exists */
-export function definitionExistsOld(
+/** indicate if a clarification already exists */
+export function clarificationExistsOld(
   editor: Editor,
-  definitionRange: TextDefinition
+  clarificationRange: TextClarification
 ) {
   let returnValue = false;
   const root = editor.getJSON();
@@ -148,13 +148,13 @@ export function definitionExistsOld(
 
       // the element is of type text and has some marks, analyse the marks
     } else if (element.type === 'text' && element.marks !== undefined) {
-      // for each "definition" mark, verify if the new range is within that definition
-      const definitions = element.marks
-        .filter((m: { type: string }) => m.type === 'definition')
+      // for each "clarification" mark, verify if the new range is within that clarification
+      const clarifications = element.marks
+        .filter((m: { type: string }) => m.type === 'clarification')
         .forEach((element: any) => {
           if (
-            element.attrs.from < definitionRange.range[0].to &&
-            element.attrs.to > definitionRange.range[0].from
+            element.attrs.from < clarificationRange.range[0].to &&
+            element.attrs.to > clarificationRange.range[0].from
           ) {
             returnValue = true;
           }

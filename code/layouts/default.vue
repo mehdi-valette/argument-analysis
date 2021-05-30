@@ -13,7 +13,7 @@ import {Vue, Component} from 'vue-property-decorator';
 export default class LayoutDefault extends Vue {
   steps = [
     {text: 'file', href: '/file'},
-    {text: 'clarification', href: '/definition'}
+    {text: 'clarification', href: '/clarification'}
   ]
 }
 </script>

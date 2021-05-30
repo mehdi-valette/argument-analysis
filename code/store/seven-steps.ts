@@ -1,6 +1,6 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
 import cloneDeep from 'lodash.clonedeep';
-import { TextDefinition, TextRange } from '~/types/seven-steps';
+import { TextClarification, TextRange } from '~/types/seven-steps';
 
 @Module({
   name: '7step',
@@ -8,7 +8,7 @@ import { TextDefinition, TextRange } from '~/types/seven-steps';
   namespaced: false,
 })
 export default class SevenStep extends VuexModule {
-  private _definition: TextDefinition[] = [];
+  private _clarification: TextClarification[] = [];
   private _fileOriginal: File = new File([], '');
   private _textOriginal: any = {};
   private _textAnnotated = {};
@@ -40,59 +40,59 @@ export default class SevenStep extends VuexModule {
     return this._textOriginal;
   }
 
-  /** create a new definition */
+  /** create a new clarification */
   @Mutation
-  definitionCreate(definition: TextDefinition) {
-    this._definition.push(definition);
+  clarificationCreate(clarification: TextClarification) {
+    this._clarification.push(clarification);
   }
 
-  /** update the meaning of a definition */
+  /** update the meaning of a clarification */
   @Mutation
-  definitionUpdate({
+  clarificationUpdate({
     localId,
-    newDefinition,
+    newClarification,
   }: {
     localId: string;
-    newDefinition: string;
+    newClarification: string;
   }) {
-    const definitionFound = this._definition.find(
-      (definition) => definition.localId === localId
+    const clarificationFound = this._clarification.find(
+      (clarification) => clarification.localId === localId
     );
-    if (definitionFound !== undefined) {
-      definitionFound.definition = newDefinition;
+    if (clarificationFound !== undefined) {
+      clarificationFound.clarification = newClarification;
     }
   }
 
-  /** remove a definition */
+  /** remove a clarification */
   @Mutation
-  definitionDelete(localId: string) {
-    this._definition = this._definition.filter(
-      (definition) => definition.localId !== localId
+  clarificationDelete(localId: string) {
+    this._clarification = this._clarification.filter(
+      (clarification) => clarification.localId !== localId
     );
   }
 
-  /** update a definition range */
+  /** update a clarification range */
   @Mutation
-  definitionRangeUpdate({
+  clarificationRangeUpdate({
     localId,
     range,
   }: {
     localId: string;
     range: TextRange[];
   }) {
-    const definitionList = cloneDeep(this._definition);
-    definitionList.forEach((definition) => {
-      if (definition.localId === localId) {
-        definition.range = range;
+    const clarificationList = cloneDeep(this._clarification);
+    clarificationList.forEach((clarification) => {
+      if (clarification.localId === localId) {
+        clarification.range = range;
       }
     });
 
-    this._definition = definitionList;
+    this._clarification = clarificationList;
   }
 
-  /** remove a text-selection from a definition */
+  /** remove a text-selection from a clarification */
   @Mutation
-  definitionRangeDelete({
+  clarificationRangeDelete({
     localId,
     from,
     to,
@@ -101,44 +101,44 @@ export default class SevenStep extends VuexModule {
     from: number;
     to: number;
   }) {
-    const definitionList = cloneDeep(this._definition);
+    const clarificationList = cloneDeep(this._clarification);
 
-    const definition = definitionList.find(
-      (definition) => definition.localId === localId
+    const clarification = clarificationList.find(
+      (clarification) => clarification.localId === localId
     );
 
-    if (definition !== undefined) {
-      definition.range = definition.range.filter(
+    if (clarification !== undefined) {
+      clarification.range = clarification.range.filter(
         (range) => range.from !== from || range.to !== to
       );
 
-      this._definition = definitionList;
+      this._clarification = clarificationList;
     }
   }
 
-  /** add a text-selection to a definition*/
+  /** add a text-selection to a clarification*/
   @Mutation
-  definitionRangeAdd({
+  clarificationRangeAdd({
     localId,
     range,
   }: {
     localId: string;
     range: TextRange[];
   }) {
-    const definitionList = cloneDeep(this._definition);
-    const definition = definitionList.find(
-      (definition) => definition.localId === localId
+    const clarificationList = cloneDeep(this._clarification);
+    const clarification = clarificationList.find(
+      (clarification) => clarification.localId === localId
     );
 
-    if (definition !== undefined) {
-      definition.range.push(...range);
+    if (clarification !== undefined) {
+      clarification.range.push(...range);
 
-      this._definition = definitionList;
+      this._clarification = clarificationList;
     }
   }
 
-  /** return all definitions */
-  get definition() {
-    return cloneDeep(this._definition);
+  /** return all clarifications */
+  get clarification() {
+    return cloneDeep(this._clarification);
   }
 }

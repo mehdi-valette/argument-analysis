@@ -1,6 +1,6 @@
 <template lang="pug">
-div.definition-list-item-text-selection
-  span {{definitionRange.text}}
+div.clarification-list-item-text-selection
+  span {{clarificationRange.text}}
   b-icon.icon-delete(
     v-b-tooltip.hover
     title="delete text"
@@ -16,7 +16,7 @@ div.definition-list-item-text-selection
     @ok="deleteText"
     v-model="deleteModalShow"
   )
-    div {{definitionRange.text}}
+    div {{clarificationRange.text}}
 </template>
 
 <script lang="ts">
@@ -31,22 +31,22 @@ import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
     BIconXOctagonFill,
   }
 })
-export default class DefinitionlistItemdefinitionRange extends Vue {
+export default class ClarificationlistItemclarificationRange extends Vue {
   @Prop({required: true})
-  private readonly definitionRange!: TextRange;
+  private readonly clarificationRange!: TextRange;
 
   @Prop({required: true})
-  private readonly definitionId!: string;
+  private readonly clarificationId!: string;
 
   private deleteModalShow: boolean = false;
 
   deleteText() {
     this.$store.commit(
-      'definitionRangeDelete',
+      'clarificationRangeDelete',
       {
-        localId: this.definitionId,
-        from: this.definitionRange.from,
-        to: this.definitionRange.to
+        localId: this.clarificationId,
+        from: this.clarificationRange.from,
+        to: this.clarificationRange.to
       }
     )
   }
@@ -54,7 +54,7 @@ export default class DefinitionlistItemdefinitionRange extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.definition-list-item-text-selection {
+.clarification-list-item-text-selection {
   display: inline-block;
   font-size: 0.8em;
   background-color: #eee;

@@ -1,22 +1,22 @@
 <template lang="pug">
 div.index
-  definition-text(:text="text")
-  definition-list
+  clarification-text(:text="text")
+  clarification-list
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import DefinitionText from '~/components/DefinitionText.vue';
-import DefinitionList from '~/components/DefinitionList.vue';
-import { EventBusMessage, TextDefinition } from '~/types/seven-steps';
+import ClarificationText from '~/components/ClarificationText.vue';
+import ClarificationList from '~/components/ClarificationList.vue';
+import { EventBusMessage, TextClarification } from '~/types/seven-steps';
 
 @Component({
   components: {
-    DefinitionText,
-    DefinitionList
+    ClarificationText,
+    ClarificationList
   }
 })
-export default class Definition extends Vue {
+export default class Clarification extends Vue {
 
   get text() {
     const textAnnotated = this.$store.getters['textAnnotated'];
@@ -43,12 +43,12 @@ export default class Definition extends Vue {
         header: [{emitter: 'index'}],
         payload: {
           localId: '',
-          definition: '',
+          clarification: '',
           range: []
-        } as TextDefinition
+        } as TextClarification
       }
 
-      this.$bus.$emit('text-definition-add', message);
+      this.$bus.$emit('text-clarification-add', message);
     }
   }
 }
