@@ -16,11 +16,14 @@ div.document
     editor-content.content(:editor="editor")
   
   b-modal(
-    v-model="modalRouteLeave" title="leaving the step 'file'"
+    v-model="modalRouteLeave" title="Leaving the step 'file'"
     ok-title="continue"
     @ok="routeLeave"
   )
-    div We will not be able to edit the text after this. Do you want to continue?
+    template
+      p The edited text here will be copied to the annotated text, which will be used in the next steps. However this can happen only once.
+      p If you come back to this step you will be able to edit the text, however these edits won't be repercuted in the annotated text of the next steps.
+      p Do you want to continue?
 </template>
 
 <script lang="ts">
@@ -57,6 +60,9 @@ export default class Index extends Vue {
 
   routeLeave() {
     this.routeConfirmed = true;
+    if(Object.keys(this.$store.getters['textAnnotated']).length === 0) {
+      this.$store.commit('textAnnotatedUpdate', this.editorJson);
+    }
     this.$router.push(this.routeNext);
   }
 

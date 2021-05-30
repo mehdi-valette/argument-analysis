@@ -19,14 +19,7 @@ import { EventBusMessage, TextClarification } from '~/types/seven-steps';
 export default class Clarification extends Vue {
 
   get text() {
-    const textAnnotated = this.$store.getters['textAnnotated'];
-    const textOriginal = this.$store.getters['textOriginal'];
-
-    if(Object.keys(textAnnotated).length === 0) {
-      this.$store.commit('textAnnotatedUpdate', textOriginal);
-    }
-
-    return textAnnotated;
+    return this.$store.getters['textAnnotated'];
   }
 
   mounted() {

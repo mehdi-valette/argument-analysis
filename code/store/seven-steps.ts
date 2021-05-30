@@ -10,7 +10,10 @@ import { TextClarification, TextRange } from '~/types/seven-steps';
 export default class SevenStep extends VuexModule {
   private _clarification: TextClarification[] = [];
   private _fileOriginal: File = new File([], '');
-  private _textOriginal: any = {};
+  private _textOriginal = {
+    type: 'doc',
+    content: [{ type: 'paragraph' }],
+  };
   private _textAnnotated = {};
 
   @Mutation
