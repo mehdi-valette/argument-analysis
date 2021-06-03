@@ -8,7 +8,8 @@ import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
 import {Editor, EditorContent} from '@tiptap/vue-2';
 import StarterKit from '@tiptap/starter-kit';
 import {Claim as TextEditorClaim} from '~/components/TextEditorClaim';
-import { EventBusMessage, TextClaim } from '~/types/seven-steps';
+import {Clarification as TextEditorClarification} from '~/components/TextEditorClarification';
+import { EventBusMessage, TextClaim, TextClarification } from '~/types/seven-steps';
 import cuid from 'cuid';
 import cloneDeep from 'lodash.clonedeep';
 import { getClaimEditor, rangeExists } from '~/assets/ts/text-util';
@@ -24,7 +25,7 @@ export default class TextEditor extends Vue {
 
   private editor: Editor = new Editor({
     content: cloneDeep(this.text),
-    extensions: [StarterKit, TextEditorClaim],
+    extensions: [StarterKit, TextEditorClaim, TextEditorClarification],
     editable: false,
   });
 
@@ -36,6 +37,25 @@ export default class TextEditor extends Vue {
   /** get the list of claims from Vuex */
   get claimList() {
     return this.$store.getters['claim'] as TextClaim[];
+  }
+
+  /** load the clarifications on the annotated text */
+  loadClarification() {
+    this.$store.getters['clarification']
+      .forEach((clarification: TextClarification) => {
+        clarification.range.forEach(range => {
+          this.editor.commands.setTextSelection(
+            {from: range.from, to: range.to}
+          );
+
+          this.editor.commands.setClarification({
+            id: clarification.localId,
+            from: range.from,
+            to: range.to,
+            clarification: clarification.clarification,
+          });
+        })
+      })
   }
 
   /** When the list of claims changes the text is updated accordingly */
@@ -106,7 +126,8 @@ export default class TextEditor extends Vue {
  
   mounted() {
     this.editor.on('create', () => {
-      this.onClaimChange(this.claimList, []);
+      this.loadClarification();
+      this.onClaimChange([], []);
     });
 
     this.editor.commands.setContent(this.text);
