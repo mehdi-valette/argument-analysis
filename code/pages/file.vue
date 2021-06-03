@@ -20,10 +20,12 @@ div.document
     ok-title="continue"
     @ok="routeLeaveConfirmed"
   )
-    template
+    template(v-if="textAnnotatedEmpty")
       p The edited text here will be copied to the annotated text, which will be used in the next steps. However this can happen only once.
-      p If you come back to this step you will be able to edit the text, however these edits won't be repercuted in the annotated text of the next steps.
+      p If you come back to this step you will be able to edit the text, however these edits will not change the annotated text of the next steps.
       p Do you want to continue?
+    template(v-else)
+      p The modification on this text will not be transfered to the annotated text, because an annotated text already exist.
 </template>
 
 <script lang="ts">
@@ -70,6 +72,19 @@ export default class Index extends Vue {
   /** return a JSON version of the editor's state */
   get editorJson() {
     return this.editor.getJSON();
+  }
+
+  /** return whether annotated text is empty */
+  get textAnnotatedEmpty() {
+    let returnValue = true;
+
+    const textAnnotated = this.$store.getters['textAnnotated'];
+
+    if(Object.keys(textAnnotated).length > 0) {
+      returnValue = false;
+    }
+
+    return returnValue;
   }
 
   /** get the text that is in Vuex (useful when coming back to this step) */
