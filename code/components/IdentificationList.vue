@@ -1,19 +1,19 @@
 <template lang="pug">
-div.clarification-list 
+div.claim-list 
   div.top
     b-list-group
       b-list-group-item(
-        v-for="clarification in clarificationList"
-        :key="clarification.localId"
-        ref="clarificationComponent"
+        v-for="claim in claimList"
+        :key="claim.localId"
+        ref="claimComponent"
       )
-        clarification-list-item(:clarification="clarification")
+        claim-list-item(:claim="claim")
 
   div.bottom
     b-button(
       v-b-tooltip.hover
       title="shortcut: Enter"
-      @click="getClarification"
+      @click="getClaim"
       small
       block
       variant="primary"
@@ -22,40 +22,50 @@ div.clarification-list
 
 <script lang="ts">
 import {Vue, Component, Watch} from 'vue-property-decorator';
-import { TextClarification, EventBusMessage } from '~/types/seven-steps';
-import ClarificationListItem from '@/components/ClarificationListItem.vue';
+import { TextClaim, EventBusMessage } from '~/types/seven-steps';
+import ClaimListItem from '@/components/IdentificationListItem.vue';
 
 @Component({
   components: {
-    ClarificationListItem
+    ClaimListItem
   }
 })
-export default class ClarificationList extends Vue {
-  private clarificationListCheck: string[] = [];
-  private clarificationReference: Element[] = [];
+export default class ClaimList extends Vue {
+  private claimListCheck: string[] = [];
+  private claimReference: Element[] = [];
 
-  get clarificationList() {
-    return this.$store.getters['clarification'] as TextClarification[];
+  get claimList() {
+    return this.$store.getters['claim'] as TextClaim[];
   }
 
-  getClarification() {
+  /** trigger IdentificationText to create a new claim  */
+  getClaim() {
     const message: EventBusMessage = {
-      header: [{emitter: 'clarification-list'}],
+      header: [{emitter: 'claim-list'}],
       payload: {
+        claim: {
+          translation: {
+            default: ''
+          },
+          logic: {}
+        },
+        stated: false,
+        conclusion: false,
+        number: 0,
         localId: '',
-        clarification: '',
-      }
+        range: []
+      } as TextClaim
     }
 
     this.$bus.$emit(
-      'text-clarification-add', message
+      'text-claim-add', message
     );
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.clarification-list {
+.claim-list {
   display: flex;
   flex-direction: column;
   height: 100%;

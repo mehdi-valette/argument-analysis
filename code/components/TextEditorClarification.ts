@@ -119,7 +119,7 @@ export const Clarification = Mark.create<ClarificationOptions>({
 
   addKeyboardShortcuts() {
     return {
-      'Mod-b': () => this.editor.commands.toggleClarification(),
+      'Enter': () => this.editor.commands.toggleClarification(),
     };
   },
 

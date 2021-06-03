@@ -52,7 +52,7 @@ export function getClarificationEditor(editor: Editor) {
       // the element is of type text and has some marks, analyse the marks
     } else if (element.type === 'text' && element.marks !== undefined) {
       // for each "clarification" mark
-      const clarifications = element.marks
+      element.marks
         .filter((m: { type: string }) => m.type === 'clarification')
         .forEach((mark: any) => {
           clarificationMap.set(`${mark.attrs.from}-${mark.attrs.to}`, {
@@ -60,6 +60,39 @@ export function getClarificationEditor(editor: Editor) {
             from: mark.attrs.from,
             to: mark.attrs.to,
             clarification: mark.attrs.clarification,
+          });
+        });
+    }
+  }
+
+  return clarificationMap;
+}
+
+/** get the claims from a Tiptap editor */
+export function getClaimEditor(editor: Editor) {
+  const root = editor.getJSON();
+  const elementList: Record<string, any>[] = [root];
+  const clarificationMap = new Map<
+    string,
+    { id: string; from: number; to: number; number: number }
+  >();
+
+  for (const element of elementList) {
+    // the element is of type "block", add its children to the nodes' list
+    if (element.content !== undefined) {
+      elementList.push(...element.content);
+
+      // the element is of type text and has some marks, analyse the marks
+    } else if (element.type === 'text' && element.marks !== undefined) {
+      // for each "clarification" mark
+      element.marks
+        .filter((m: { type: string }) => m.type === 'claim')
+        .forEach((mark: any) => {
+          clarificationMap.set(`${mark.attrs.from}-${mark.attrs.to}`, {
+            id: mark.attrs.id,
+            from: mark.attrs.from,
+            to: mark.attrs.to,
+            number: mark.attrs.number,
           });
         });
     }

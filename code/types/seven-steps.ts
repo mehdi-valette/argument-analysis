@@ -29,11 +29,13 @@ export interface TextClarification extends TextExtension {
  * @prop claim: claim that is being made
  * @prop stated: whether the claim is stated or unstated
  * @prop conclusion: whether that claim is one of the text's main conclusion
+ * @prop number: the number attributed to this claim within the text
  */
 export interface TextClaim extends TextExtension {
   claim: Claim;
   stated: boolean;
   conclusion: boolean;
+  number: number;
 }
 
 /** A claim, in a text or not

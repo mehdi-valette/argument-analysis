@@ -1,111 +1,134 @@
 <template lang="pug">
-div.clarification-list-item
-  //- button to delete a clarification
-  b-icon.icon(
-    icon="x-octagon"
-    v-b-tooltip.hover
-    title="delete clarification"
-    @click="() => this.modalDelete = true"
-  )
+div.claim-list-item
+  div.number
+    identification-list-item-number(:claim="claim")
 
-  //- button to add a text-selection to the clarification
-  b-icon.icon(
-    icon="node-plus"
-    v-b-tooltip.hover
-    title="add the selected text to the clarification"
-    @click="addSelection"
-  )
-  
-  //- original text (multiple texts possible)
-  clarification-list-item-range(
-    v-for="range in clarification.range"
-    :clarification-range="range"
-    :clarification-id="clarification.localId"
-  )
+  div.claim
+    //- button to delete a claim
+    b-icon.icon(
+      icon="x-octagon"
+      v-b-tooltip.hover
+      title="delete claim"
+      @click="() => this.modalDelete = true"
+    )
 
-  //- clarification that is given to the text
-  b-input(
-    @change="clarificationUpdate"
-    v-model="clarificationText"
-    size="sm"
-    ref="clarificationInput"
-  )
+    //- button to add a text-selection to the claim
+    b-icon.icon(
+      icon="node-plus"
+      v-b-tooltip.hover
+      title="add the selected text to the claim"
+      @click="addSelection"
+    )
+    
+    //- original text (multiple texts possible)
+    identification-list-item-range(
+      v-for="range in claim.range"
+      :claim-range="range"
+      :claim-id="claim.localId"
+    )
+
+    //- claim that is given to the text
+    b-input(
+      @change="claimUpdate"
+      v-model="claimText"
+      size="sm"
+      ref="claimInput"
+    )
 
   b-modal(
     v-model="modalDelete"
-    @ok="clarificationDelete"
+    @ok="claimDelete"
     auto-focus-button="cancel"
     ok-title="delete"
-    title="Shall we delete the following clarification?"
+    title="Shall we delete the following claim?"
   )
-    div {{this.clarification.clarification}}
+    div {{this.claim.claim}}
 </template>
 
 <script lang="ts">
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import {BIcon, BIconXOctagon, BIconNodePlus} from 'bootstrap-vue';
+import cloneDeep from 'lodash.clonedeep';
 
-import { EventBusMessage, TextClarification } from '~/types/seven-steps';
-import ClarificationListItemRange from
-  '~/components/ClarificationListItemRange.vue';
-import { rangeExists } from '~/assets/ts/clarification-util';
-import ClarificationText from './ClarificationText.vue';
+import { EventBusMessage, TextClaim } from '~/types/seven-steps';
+import IdentificationListItemRange from
+  '~/components/IdentificationListItemRange.vue';
+import IdentificationListItemNumber from
+  '@/components/IdentificationListItemNumber.vue';
 
 @Component({
   components: {
     BIcon,
     BIconXOctagon,
-    ClarificationListItemRange,
     BIconNodePlus,
+    IdentificationListItemRange,
+    IdentificationListItemNumber,
   }
 })
-export default class ClarificationListItem extends Vue {
+export default class ClaimListItem extends Vue {
   @Prop({required: true})
-  private readonly clarification!: TextClarification;
+  private readonly claim!: TextClaim;
 
   private modalDelete: boolean = false;
 
-  get clarificationText() {
-    return this.clarification.clarification;
+  get claimText() {
+    return this.claim.claim.translation.default;
   }
-  set clarificationText(newClarification: string) {}
+  set claimText(newClaim: string) {}
 
-  clarificationUpdate(newClarification: string) {
-    this.$store.commit('clarificationUpdate', {localId: this.clarification.localId, newClarification});
-  }
-
-  clarificationDelete() {
-    this.$store.commit('clarificationDelete', this.clarification.localId);
+  claimUpdate(newDefaultText: string) {
+    const newClaim = cloneDeep(this.claim.claim);
+    newClaim.translation.default = newDefaultText;
+    this.$store.commit('claimUpdate', {localId: this.claim.localId, newClaim});
   }
 
-  // add the selected text to the clarification
+  claimDelete() {
+    this.$store.commit('claimDelete', this.claim.localId);
+  }
+
+  // add the selected text to the claim
   addSelection() {
     const message: EventBusMessage = {
-      header: [{emitter: `clarification-list-item`}],
-      payload: this.clarification
+      header: [{emitter: `claim-list-item`}],
+      payload: this.claim
     }
 
     this.$bus.$emit(
-      'text-clarification-add',
+      'text-claim-add',
       message
     );
   }
 
   mounted() {
-    if(this.clarificationText === '') {
-      (this.$refs.clarificationInput as any).focus();
+    if(this.claimText === '') {
+      (this.$refs.claimInput as any).focus();
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.clarification-list-item {
-  .icon {
-    display: inline-block;
-    margin-right: 0.5em;
-    cursor: pointer;
-    user-select: none;
+.claim-list-item {
+  display: flex;
+  align-items: center;
+
+  .number {
+    border-right: 1px solid black;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+  }
+
+  .claim {
+    flex-grow: 1;
+
+    .icon {
+      display: inline-block;
+      margin-right: 0.5em;
+      cursor: pointer;
+      user-select: none;
+    }
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template lang="pug">
-div.index
-  clarification-text(:text="text")
+div.clarification
+  clarification-text.text(:text="text")
   clarification-list
 </template>
 
@@ -47,11 +47,18 @@ export default class Clarification extends Vue {
 }
 </script>
 
-<style lang="scss">
-.index {
+<style lang="scss" scoped>
+.clarification {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: stretch;
   min-height: 0;
+
+  .text {
+    overflow: auto;
+    border: 1px solid black;
+    border-radius: .3em;
+    padding: .5em;
+  }
 }
 </style>

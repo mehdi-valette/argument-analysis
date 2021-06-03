@@ -12,7 +12,7 @@ export interface ClaimOptions {
   id: string;
   from: number;
   to: number;
-  claim: string;
+  number: number;
 }
 
 declare module '@tiptap/core' {
@@ -25,7 +25,7 @@ declare module '@tiptap/core' {
         id: string;
         from: number;
         to: number;
-        claim: ClaimInterface;
+        number: number;
       }) => Command;
       /**
        * Toggle a claim mark
@@ -54,7 +54,7 @@ export const Claim = Mark.create<ClaimOptions>({
     id: '',
     from: -1,
     to: -1,
-    claim: '',
+    number: 0,
   },
 
   parseHTML() {
@@ -81,8 +81,8 @@ export const Claim = Mark.create<ClaimOptions>({
         default: -1,
         rendered: false,
       },
-      claim: {
-        default: { translation: {}, logic: {} },
+      number: {
+        default: 0,
         rendered: false,
       },
     };
@@ -92,7 +92,7 @@ export const Claim = Mark.create<ClaimOptions>({
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, {
-        title: mark.attrs.claim.translation.default,
+        title: mark.attrs.number,
       }),
       0,
     ];

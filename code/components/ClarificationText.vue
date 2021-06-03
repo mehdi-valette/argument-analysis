@@ -11,7 +11,7 @@ import {Clarification} from '~/components/TextEditorClarification';
 import { EventBusMessage, TextClarification } from '~/types/seven-steps';
 import cuid from 'cuid';
 import cloneDeep from 'lodash.clonedeep';
-import { rangeExists, getClarificationEditor } from '~/assets/ts/clarification-util';
+import { rangeExists, getClarificationEditor } from '~/assets/ts/text-util';
 
 @Component({
   components: {
@@ -105,6 +105,10 @@ export default class TextEditor extends Vue {
   }
  
   mounted() {
+    this.editor.on('create', () => {
+      this.onClarificationChange([], []);
+    })
+
     this.editor.commands.setContent(this.text);
 
     // mark the selected text as a clarification
@@ -178,7 +182,7 @@ export default class TextEditor extends Vue {
 .ProseMirror {
   .clarification {
     text-decoration: underline;
-    text-decoration-style: dotted;
+    text-decoration-style: double;
   }
 }
 </style>

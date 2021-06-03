@@ -158,18 +158,20 @@ export default class SevenStep extends VuexModule {
 
   private _claim: TextClaim[] = [];
 
-  /** return all clarifications */
+  /** return all claims */
   get claim() {
     return cloneDeep(this._claim);
   }
 
-  /** create a new clarification */
+  /** create a new claim */
   @Mutation
   claimCreate(claim: TextClaim) {
+    claim.number = this._claim.length + 1;
+
     this._claim.push(claim);
   }
 
-  /** update the meaning of a clarification */
+  /** update a claim */
   @Mutation
   claimUpdate({ localId, newClaim }: { localId: string; newClaim: Claim }) {
     const claimFound = this._claim.find((claim) => claim.localId === localId);
@@ -178,13 +180,24 @@ export default class SevenStep extends VuexModule {
     }
   }
 
-  /** remove a clarification */
+  /** update whether the claim (un)stated and is a conclusion */
+  @Mutation 
+  claimTypeUpdate({localId, stated, conclusion}: {localId: string, stated: boolean, conclusion: boolean}) {
+    const claimFound = this._claim.find((claim) => claim.localId === localId);
+
+    if(claimFound !== undefined) {
+      claimFound.conclusion = conclusion;
+      claimFound.stated = stated;
+    }
+  }
+
+  /** remove a claim */
   @Mutation
   claimDelete(localId: string) {
     this._claim = this._claim.filter((claim) => claim.localId !== localId);
   }
 
-  /** update a clarification range */
+  /** update a claim range */
   @Mutation
   claimRangeUpdate({
     localId,
@@ -203,7 +216,7 @@ export default class SevenStep extends VuexModule {
     this._claim = claimList;
   }
 
-  /** remove a text-selection from a clarification */
+  /** remove a text-selection from a claim */
   @Mutation
   claimRangeDelete({
     localId,
@@ -227,7 +240,7 @@ export default class SevenStep extends VuexModule {
     }
   }
 
-  /** add a text-selection to a clarification*/
+  /** add a text-selection to a claim*/
   @Mutation
   claimRangeAdd({ localId, range }: { localId: string; range: TextRange[] }) {
     const claimList = cloneDeep(this._claim);

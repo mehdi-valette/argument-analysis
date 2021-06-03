@@ -48,8 +48,6 @@ import {BIcon, BIconXOctagon, BIconNodePlus} from 'bootstrap-vue';
 import { EventBusMessage, TextClarification } from '~/types/seven-steps';
 import ClarificationListItemRange from
   '~/components/ClarificationListItemRange.vue';
-import { rangeExists } from '~/assets/ts/clarification-util';
-import ClarificationText from './ClarificationText.vue';
 
 @Component({
   components: {

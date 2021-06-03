@@ -1,6 +1,6 @@
 <template lang="pug">
-div.index
-  identification-text(:text="text")
+div.identification
+  identification-text.text(:text="text")
   identification-list
 </template>
 
@@ -42,7 +42,8 @@ export default class Identification extends Vue {
             logic: {}
           },
           stated: false,
-          conclusion: false
+          conclusion: false,
+          number: 0
         } as TextClaim
       }
 
@@ -53,10 +54,17 @@ export default class Identification extends Vue {
 </script>
 
 <style lang="scss">
-.index {
+.identification {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: stretch;
   min-height: 0;
+
+  .text {
+    overflow: auto;
+    padding: .5em;
+    border-radius: 0.3em;
+    border: 1px solid black;
+  }
 }
 </style>
