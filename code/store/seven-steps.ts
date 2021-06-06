@@ -6,6 +6,13 @@ import {
   TextClarification,
   TextRange,
 } from '~/types/seven-steps';
+import {
+  rangeAdd,
+  RangeDelete,
+  rangeDelete,
+  RangeModification,
+  rangeUpdate,
+} from './function';
 
 @Module({
   name: '7step',
@@ -90,67 +97,25 @@ export default class SevenStep extends VuexModule {
 
   /** update a clarification range */
   @Mutation
-  clarificationRangeUpdate({
-    localId,
-    range,
-  }: {
-    localId: string;
-    range: TextRange[];
-  }) {
-    const clarificationList = cloneDeep(this._clarification);
-    clarificationList.forEach((clarification) => {
-      if (clarification.localId === localId) {
-        clarification.range = range;
-      }
-    });
-
-    this._clarification = clarificationList;
+  clarificationRangeUpdate(payload: RangeModification) {
+    this._clarification = rangeUpdate(this._clarification, payload);
   }
 
   /** remove a text-selection from a clarification */
   @Mutation
-  clarificationRangeDelete({
-    localId,
-    from,
-    to,
-  }: {
-    localId: string;
-    from: number;
-    to: number;
-  }) {
-    const clarificationList = cloneDeep(this._clarification);
-
-    const clarification = clarificationList.find(
-      (clarification) => clarification.localId === localId
-    );
-
-    if (clarification !== undefined) {
-      clarification.range = clarification.range.filter(
-        (range) => range.from !== from || range.to !== to
-      );
-
-      this._clarification = clarificationList;
+  clarificationRangeDelete(payLoad: RangeDelete) {
+    const newList = rangeDelete(this._clarification, payLoad);
+    if (newList !== null) {
+      this._clarification = newList;
     }
   }
 
   /** add a text-selection to a clarification*/
   @Mutation
-  clarificationRangeAdd({
-    localId,
-    range,
-  }: {
-    localId: string;
-    range: TextRange[];
-  }) {
-    const clarificationList = cloneDeep(this._clarification);
-    const clarification = clarificationList.find(
-      (clarification) => clarification.localId === localId
-    );
-
-    if (clarification !== undefined) {
-      clarification.range.push(...range);
-
-      this._clarification = clarificationList;
+  clarificationRangeAdd(payload: RangeModification) {
+    const newList = rangeAdd(this._clarification, payload);
+    if (newList !== null) {
+      this._clarification = newList;
     }
   }
 
@@ -181,11 +146,19 @@ export default class SevenStep extends VuexModule {
   }
 
   /** update whether the claim (un)stated and is a conclusion */
-  @Mutation 
-  claimTypeUpdate({localId, stated, conclusion}: {localId: string, stated: boolean, conclusion: boolean}) {
+  @Mutation
+  claimTypeUpdate({
+    localId,
+    stated,
+    conclusion,
+  }: {
+    localId: string;
+    stated: boolean;
+    conclusion: boolean;
+  }) {
     const claimFound = this._claim.find((claim) => claim.localId === localId);
 
-    if(claimFound !== undefined) {
+    if (claimFound !== undefined) {
       claimFound.conclusion = conclusion;
       claimFound.stated = stated;
     }
@@ -199,57 +172,26 @@ export default class SevenStep extends VuexModule {
 
   /** update a claim range */
   @Mutation
-  claimRangeUpdate({
-    localId,
-    range,
-  }: {
-    localId: string;
-    range: TextRange[];
-  }) {
-    const claimList = cloneDeep(this._claim);
-    claimList.forEach((claim) => {
-      if (claim.localId === localId) {
-        claim.range = range;
-      }
-    });
-
-    this._claim = claimList;
+  claimRangeUpdate(payload: RangeModification) {
+    this._claim = rangeUpdate(this._claim, payload);
   }
 
   /** remove a text-selection from a claim */
   @Mutation
-  claimRangeDelete({
-    localId,
-    from,
-    to,
-  }: {
-    localId: string;
-    from: number;
-    to: number;
-  }) {
-    const claimList = cloneDeep(this._claim);
-
-    const claim = claimList.find((claim) => claim.localId === localId);
-
-    if (claim !== undefined) {
-      claim.range = claim.range.filter(
-        (range) => range.from !== from || range.to !== to
-      );
-
-      this._claim = claimList;
+  claimRangeDelete(payload: RangeDelete) {
+    const newList = rangeDelete(this._claim, payload);
+    if (newList !== null) {
+      this._claim = newList;
     }
   }
 
   /** add a text-selection to a claim*/
   @Mutation
-  claimRangeAdd({ localId, range }: { localId: string; range: TextRange[] }) {
-    const claimList = cloneDeep(this._claim);
-    const claim = claimList.find((claim) => claim.localId === localId);
+  claimRangeAdd(payload: RangeModification) {
+    const newList = rangeAdd(this._claim, payload);
 
-    if (claim !== undefined) {
-      claim.range.push(...range);
-
-      this._claim = claimList;
+    if (newList !== null) {
+      this._claim = newList;
     }
   }
 }
