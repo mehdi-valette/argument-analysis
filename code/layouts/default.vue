@@ -14,7 +14,8 @@ export default class LayoutDefault extends Vue {
   steps = [
     {text: 'file', href: '/file'},
     {text: 'clarification', href: '/clarification'},
-    {text: 'claim identification', href: '/identification'}
+    {text: 'claim identification', href: '/identification'},
+    {text: 'structure', href: '/structure'}
   ]
 }
 </script>
