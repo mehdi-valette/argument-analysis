@@ -16,19 +16,19 @@ export default class StructureLink extends Vue {
   private readonly to!: {x: number, y: number, id: string};
 
   @Inject()
-  private readonly scale!: number;
+  private readonly scale!: {val: number};
 
   get fromScaled() {
     return {
-      x: this.from.x * this.scale,
-      y: this.from.y * this.scale,
+      x: this.from.x * this.scale.val,
+      y: this.from.y * this.scale.val,
     };
   }
 
   get toScaled() {
     return {
-      x: this.to.x * this.scale,
-      y: this.to.y * this.scale,
+      x: this.to.x * this.scale.val,
+      y: this.to.y * this.scale.val,
     };
   }
 
@@ -40,11 +40,11 @@ export default class StructureLink extends Vue {
   }
 
   get radius() {
-    return 10 * this.scale;
+    return 10 * this.scale.val;
   }
 
   get width() {
-    return 2 * this.scale;
+    return 2 * this.scale.val;
   }
 }
 </script>
