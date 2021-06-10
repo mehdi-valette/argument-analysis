@@ -21,6 +21,7 @@
     "cuid": "^2.1.8",
     "lodash.clonedeep": "^4.5.0",
     "nuxt": "^2.15.3",
+    "panzoom": "^9.4.2",
     "vuex-persistedstate": "*"
   },
   "devDependencies": {
