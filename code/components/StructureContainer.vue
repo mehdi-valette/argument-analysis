@@ -1,14 +1,11 @@
 <template lang="pug">
 svg(viewBox="0 0 1000 1000").svg
   g(ref="panzoom")
-    g
-      rect(x="0" y="0" width="1000" height="1000" fill="lightGrey")
+    structure-link(:from="{x: 30, y: 30, id: 'blabla'}" :to="{x: 100, y: 100, id: 'blablabla'}")
 
-      structure-link(:from="{x: 30, y: 30, id: 'blabla'}" :to="{x: 100, y: 100, id: 'blablabla'}")
+    structure-claim(:position="{x: 30, y: 30}" :number="3" text="three")
 
-      structure-claim(:position="{x: 30, y: 30}" :number="3" :text="three")
-
-      structure-claim(:position="{x: 100, y: 100}" :number="4" :text="four")
+    structure-claim(:position="{x: 100, y: 100}" :number="4" text="four")
 </template>
 
 <script lang="ts">
@@ -34,8 +31,12 @@ export default class StructureContainer extends Vue {
     const instance: PanZoom = panzoom(this.$refs.panzoom as HTMLElement, {
       bounds: true,
       beforeWheel: (e) => {
-        // TODO: find a way to correct the cursor position
-      } 
+        const offset = {x: e.clientX, y: e.clientY};
+        let delta = 1 + (e.deltaY/-1000);
+        instance.zoomTo(offset.x, offset.y, delta);
+        e.preventDefault();
+        return true;
+      }
     });
   }
 }
@@ -45,6 +46,7 @@ export default class StructureContainer extends Vue {
 .svg {
   background-color: grey;
   height: 100%;
-  width: 0;
+  width: 50%;
+  background: white;
 }
 </style>
