@@ -1,8 +1,12 @@
 <template lang="pug">
 g
-  circle(:cx="posX" :cy="posY" :r="length/2" fill="skyblue" stroke="black" :stroke-width="width")
-  foreignObject(:x="posX - length/2" :y="posY - length/2" :width="length" :height="length")
-    div.circle(:title="text" v-b-tooltip.hover :style="{fontSize: scale.val + 'em'}") {{number}}
+  template(v-for="claim, index in claimList")
+    circle(:cx="posX(index) + length/2" :cy="posY + length / 2" :r="length/2" fill="skyblue" stroke="black" :stroke-width="thickness")
+    foreignObject(:x="posX(index)" :y="posY" :width="length" :height="length")
+      div.circle(:title="claim.text" v-b-tooltip.hover :style="{fontSize: scale.val + 'em'}") {{claim.number}}
+
+  line(:x1="position.x - lengthFull / 2" :y1="position.y + length / 2 + margin + thickness" :x2="position.x + lengthFull / 2" :y2="position.y + length / 2 + margin + thickness" stroke="black" :stroke-width="thickness")
+
 </template>
 
 <script lang="ts">
@@ -14,27 +18,41 @@ export default class StructureClaim extends Vue {
   private readonly position!: {x: number, y: number};
 
   @Prop({required: true})
-  private readonly number!: string;
-
-  @Prop({required: true})
-  private readonly text!: string;
+  private readonly claimList!: {number: number, text: string}[];
 
   @Inject()
   private readonly scale!: {val: number};
 
-  get posX() {
-    return this.position.x * this.scale.val;
+  // abscisse position of a claim based on its index in the list
+  posX(index: number) {
+    return this.position.x + (index * this.lengthMargin) - (this.lengthFull / 2);
   }
 
   get posY() {
-    return this.position.y * this.scale.val;
+    return this.position.y * this.scale.val - this.length / 2;
   }
 
+  get margin() {
+    return 1 * this.scale.val;
+  }
+
+  // length of the full group of claims
+  get lengthFull() {
+    return this.lengthMargin * this.claimList.length + this.margin + this.thickness;
+  }
+
+  // length of a circle, with margin and border
+  get lengthMargin() {
+    return this.length + (this.margin * 2) + (this.thickness * 2);
+  }
+
+  // length of one circle, without margin or border
   get length() {
     return 45 * this.scale.val;
   }
 
-  get width() {
+  // thickness of the line
+  get thickness() {
     return 2 * this.scale.val;
   }
 }

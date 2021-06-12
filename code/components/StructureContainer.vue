@@ -1,11 +1,12 @@
 <template lang="pug">
 svg(viewBox="0 0 1000 1000").svg
   g(ref="panzoom")
-    structure-link(:from="{x: 30, y: 30, id: 'blabla'}" :to="{x: 100, y: 100, id: 'blablabla'}")
 
-    structure-claim(:position="{x: 30, y: 30}" :number="3" text="three")
+    structure-claim(:position="{x: 300, y: 300}" :claimList="[{number: 5, text: 'five'}, {number: 6, text: 'six'}, {number: 7, text: 'seven'}]" :premise="false" :collapse="true" )
+    structure-claim(:position="{x: 400, y: 400}" :claimList="[{number: 5, text: 'five'}]" :premise="false" :collapse="true" )
+    //- structure-claim(:position="{x: 300, y: 300}" :claimList="[{number: 5, text: 'five'}, {number: 6, text: 'six'}, {number: 7, text: 'seven'}]" :premise="false" :collapse="true" )
 
-    structure-claim(:position="{x: 100, y: 100}" :number="4" text="four")
+    structure-link(:from="{x: 300, y: 300, id: 'blabla'}" :to="{x: 400, y: 400, id: 'blablabla'}")
 </template>
 
 <script lang="ts">
