@@ -1,0 +1,1 @@
+Separate the claims in a list of their own

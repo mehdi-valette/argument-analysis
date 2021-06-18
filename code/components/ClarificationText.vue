@@ -52,7 +52,7 @@ export default class TextEditor extends Vue {
         mapVuex.set(
           `${rangeVuex.from}-${rangeVuex.to}`,
           {
-            id: defVuex.localId,
+            id: defVuex.idLocal,
             from: rangeVuex.from,
             to: rangeVuex.to,
             clarification: defVuex.clarification
@@ -126,15 +126,15 @@ export default class TextEditor extends Vue {
     const doc = this.editor.state.doc;
     const textSelected = doc.textBetween(selection.from, selection.to);
 
-    // chooses the clarification's localId
+    // chooses the clarification's idLocal
     // We're adding a range to an existing clarification:
-    //  -> use the localId of the existing clarification
+    //  -> use the idLocal of the existing clarification
     // New clarification:
     //  -> create a new cuid
-    const localId =
-      message.payload.localId === '' ?
+    const idLocal =
+      message.payload.idLocal === '' ?
         cuid() :
-        message.payload.localId;
+        message.payload.idLocal;
 
     // prepare the range of the clarification
     const range = [{
@@ -145,7 +145,7 @@ export default class TextEditor extends Vue {
 
     // prepare the clarification
     const clarification: TextClarification = {
-      localId,
+      idLocal,
       range,
       clarification: message.payload.clarification
     };
@@ -158,7 +158,7 @@ export default class TextEditor extends Vue {
       ) &&
         selection.from !== selection.to
       ) {
-        if(message.payload.localId === '') {
+        if(message.payload.idLocal === '') {
           this.$store.commit(
             'clarificationCreate',
             clarification
@@ -167,7 +167,7 @@ export default class TextEditor extends Vue {
           this.$store.commit(
             'clarificationRangeAdd',
             {
-              localId: clarification.localId,
+              idLocal: clarification.idLocal,
               range: clarification.range
             }
           )

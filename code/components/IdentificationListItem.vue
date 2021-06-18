@@ -23,8 +23,9 @@ div.claim-list-item
     //- original text (multiple texts possible)
     identification-list-item-range(
       v-for="range in claim.range"
+      :key="claim.idLocal"
       :claim-range="range"
-      :claim-id="claim.localId"
+      :claim-id="claim.idLocal"
     )
 
     //- claim that is given to the text
@@ -79,11 +80,11 @@ export default class ClaimListItem extends Vue {
   claimUpdate(newDefaultText: string) {
     const newClaim = cloneDeep(this.claim.claim);
     newClaim.translation.default = newDefaultText;
-    this.$store.commit('claimUpdate', {localId: this.claim.localId, newClaim});
+    this.$store.commit('claimUpdate', {idLocal: this.claim.idLocal, newClaim});
   }
 
   claimDelete() {
-    this.$store.commit('claimDelete', this.claim.localId);
+    this.$store.commit('claimDelete', this.claim.idLocal);
   }
 
   // add the selected text to the claim

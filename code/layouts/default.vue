@@ -1,7 +1,7 @@
 <template lang="pug">
 div.layout
   div.steps
-    nuxt-link.step(v-for="step in steps.slice().reverse()" :to="step.href")
+    nuxt-link.step(v-for="step in steps.slice().reverse()" :to="step.href" :key="step.href")
       | {{step.text}}
   Nuxt.main
 </template>

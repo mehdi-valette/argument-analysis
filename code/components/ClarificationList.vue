@@ -4,7 +4,7 @@ div.clarification-list
     b-list-group
       b-list-group-item(
         v-for="clarification in clarificationList"
-        :key="clarification.localId"
+        :key="clarification.idLocal"
         ref="clarificationComponent"
       )
         clarification-list-item(:clarification="clarification")
@@ -42,7 +42,7 @@ export default class ClarificationList extends Vue {
     const message: EventBusMessage = {
       header: [{emitter: 'clarification-list'}],
       payload: {
-        localId: '',
+        idLocal: '',
         clarification: '',
       }
     }

@@ -10,19 +10,43 @@ export interface TextRange {
 }
 
 /** Base interface that will be extended by different kinds of text extensions (clarification, claim identification)
- * @prop localId: ID used within the frontend application
- * @prop databaseId: ID used in the database
+ * @prop idLocal: ID used within the frontend application
+ * @prop idDatabase: ID used in the database
  * @prop range: list of text ranges concerned by the extension
  */
 export interface TextExtension {
-  localId: string;
-  databaseId?: string;
+  idLocal: string;
+  idDatabase?: string;
   range: TextRange[];
 }
 
 /** A clarification made in a text */
 export interface TextClarification extends TextExtension {
   clarification: string;
+}
+
+/** A claim-group that is used as premises to a conclusion
+ * @prop group: list of claims in the group, with metadata
+ * @prop group[i].claim: the claim itself
+ * @prop group[i].number: the number shown in the reduced form
+ * @prop group[i].index: the index of the claim within the group
+ * @prop group: indicate if the group is a leaf in the diagram
+ * @prop x: horizontal position
+ * @prop y: vertical position
+ * @prop width: width of the group
+ * @prop height: height of the group
+ */
+export interface TextClaimGroup {
+  group: {
+    claim: Claim;
+    number: number;
+    index: number;
+  }[];
+  leaf: boolean;
+  width: number;
+  height: number;
+  x?: number;
+  y?: number;
 }
 
 /** A claim made in a text (conclusion or premise)
@@ -43,6 +67,8 @@ export interface TextClaim extends TextExtension {
  * @prop logic: the argument in a formal logical form. Expected: {lang: 'string', prolog: 'mountain(everest)'}
  */
 export interface Claim {
+  idLocal: string;
+  idDatabase?: string;
   translation: {
     default: string;
     [lang: string]: string;

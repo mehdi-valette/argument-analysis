@@ -19,8 +19,9 @@ div.clarification-list-item
   //- original text (multiple texts possible)
   clarification-list-item-range(
     v-for="range in clarification.range"
+    :key="clarification.idLocal"
     :clarification-range="range"
-    :clarification-id="clarification.localId"
+    :clarification-id="clarification.idLocal"
   )
 
   //- clarification that is given to the text
@@ -69,11 +70,11 @@ export default class ClarificationListItem extends Vue {
   set clarificationText(newClarification: string) {}
 
   clarificationUpdate(newClarification: string) {
-    this.$store.commit('clarificationUpdate', {localId: this.clarification.localId, newClarification});
+    this.$store.commit('clarificationUpdate', {idLocal: this.clarification.idLocal, newClarification});
   }
 
   clarificationDelete() {
-    this.$store.commit('clarificationDelete', this.clarification.localId);
+    this.$store.commit('clarificationDelete', this.clarification.idLocal);
   }
 
   // add the selected text to the clarification

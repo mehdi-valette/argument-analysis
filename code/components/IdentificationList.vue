@@ -4,7 +4,7 @@ div.claim-list
     b-list-group
       b-list-group-item(
         v-for="claim in claimList"
-        :key="claim.localId"
+        :key="claim.idLocal"
         ref="claimComponent"
       )
         claim-list-item(:claim="claim")
@@ -24,6 +24,7 @@ div.claim-list
 import {Vue, Component, Watch} from 'vue-property-decorator';
 import { TextClaim, EventBusMessage } from '~/types/seven-steps';
 import ClaimListItem from '@/components/IdentificationListItem.vue';
+import cuid from 'cuid';
 
 @Component({
   components: {
@@ -44,6 +45,7 @@ export default class ClaimList extends Vue {
       header: [{emitter: 'claim-list'}],
       payload: {
         claim: {
+          idLocal: '',
           translation: {
             default: ''
           },
@@ -52,7 +54,7 @@ export default class ClaimList extends Vue {
         stated: false,
         conclusion: false,
         number: 0,
-        localId: '',
+        idLocal: '',
         range: []
       } as TextClaim
     }

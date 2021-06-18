@@ -2,24 +2,24 @@ import cloneDeep from 'lodash.clonedeep';
 import { TextRange, TextExtension } from '~/types/seven-steps';
 
 export interface RangeModification {
-  localId: string;
+  idLocal: string;
   range: TextRange[];
 }
 
 export interface RangeDelete {
-  localId: string;
+  idLocal: string;
   from: number;
   to: number;
 }
 
 export function rangeAdd<T extends TextExtension>(
   list: T[],
-  { localId, range }: RangeModification
+  { idLocal, range }: RangeModification
 ) {
   let returnValue = null;
 
   const listClone = cloneDeep(list);
-  const element = listClone.find((claim) => claim.localId === localId);
+  const element = listClone.find((claim) => claim.idLocal === idLocal);
 
   if (element !== undefined) {
     element.range.push(...range);
@@ -31,11 +31,11 @@ export function rangeAdd<T extends TextExtension>(
 
 export function rangeUpdate<T extends TextExtension>(
   list: T[],
-  { localId, range }: RangeModification
+  { idLocal, range }: RangeModification
 ) {
   const listClone = cloneDeep(list);
   listClone.forEach((element) => {
-    if (element.localId === localId) {
+    if (element.idLocal === idLocal) {
       element.range = range;
     }
   });
@@ -45,12 +45,12 @@ export function rangeUpdate<T extends TextExtension>(
 
 export function rangeDelete<T extends TextExtension>(
   list: T[],
-  { localId, from, to }: RangeDelete
+  { idLocal, from, to }: RangeDelete
 ) {
   let returnValue = null;
   const listClone = cloneDeep(list);
 
-  const element = listClone.find((claim) => claim.localId === localId);
+  const element = listClone.find((claim) => claim.idLocal === idLocal);
 
   if (element !== undefined) {
     element.range = element.range.filter(

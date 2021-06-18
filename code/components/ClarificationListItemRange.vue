@@ -44,7 +44,7 @@ export default class ClarificationlistItemclarificationRange extends Vue {
     this.$store.commit(
       'clarificationRangeDelete',
       {
-        localId: this.clarificationId,
+        idLocal: this.clarificationId,
         from: this.clarificationRange.from,
         to: this.clarificationRange.to
       }

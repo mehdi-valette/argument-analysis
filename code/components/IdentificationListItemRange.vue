@@ -44,7 +44,7 @@ export default class ClaimlistItemclaimRange extends Vue {
     this.$store.commit(
       'claimRangeDelete',
       {
-        localId: this.claimId,
+        idLocal: this.claimId,
         from: this.claimRange.from,
         to: this.claimRange.to
       }

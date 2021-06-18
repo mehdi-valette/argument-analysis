@@ -67,7 +67,7 @@ export default class IdentificationListItemNumber extends Vue {
 
     this.$store.commit(
       'claimTypeUpdate',
-      {localId: this.claim.localId, conclusion, stated}
+      {idLocal: this.claim.idLocal, conclusion, stated}
     );
   }
 }

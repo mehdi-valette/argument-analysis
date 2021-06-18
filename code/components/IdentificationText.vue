@@ -49,7 +49,7 @@ export default class TextEditor extends Vue {
           );
 
           this.editor.commands.setClarification({
-            id: clarification.localId,
+            id: clarification.idLocal,
             from: range.from,
             to: range.to,
             clarification: clarification.clarification,
@@ -72,7 +72,7 @@ export default class TextEditor extends Vue {
         mapVuex.set(
           `${rangeVuex.from}-${rangeVuex.to}`,
           {
-            id: defVuex.localId,
+            id: defVuex.idLocal,
             from: rangeVuex.from,
             to: rangeVuex.to,
             number: defVuex.number
@@ -147,15 +147,15 @@ export default class TextEditor extends Vue {
     const doc = this.editor.state.doc;
     const textSelected = doc.textBetween(selection.from, selection.to);
 
-    // chooses the claim's localId
+    // chooses the claim's idLocal
     // We're adding a range to an existing claim:
-    //  -> use the localId of the existing claim
+    //  -> use the idLocal of the existing claim
     // New claim:
     //  -> create a new cuid
-    const localId =
-      message.payload.localId === '' ?
+    const idLocal =
+      message.payload.idLocal === '' ?
         cuid() :
-        message.payload.localId;
+        message.payload.idLocal;
 
     // prepare the range of the claim
     const range = [{
@@ -166,7 +166,7 @@ export default class TextEditor extends Vue {
 
     // prepare the claim
     const claim: TextClaim = {
-      localId,
+      idLocal,
       range,
       claim: message.payload.claim,
       stated: true,
@@ -182,19 +182,19 @@ export default class TextEditor extends Vue {
       ) &&
         selection.from !== selection.to
       ) {
-        // create a claim if the localId wasn't supplied
-        if(message.payload.localId === '') {
+        // create a claim if the idLocal wasn't supplied
+        if(message.payload.idLocal === '') {
           this.$store.commit(
             'claimCreate',
             claim
           );
 
-        // update the claim if the localId was supplied
+        // update the claim if the idLocal was supplied
         } else {
           this.$store.commit(
             'claimRangeAdd',
             {
-              localId: claim.localId,
+              idLocal: claim.idLocal,
               range: claim.range
             }
           )

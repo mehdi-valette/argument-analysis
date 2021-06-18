@@ -9,6 +9,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import IdentificationText from '~/components/IdentificationText.vue';
 import IdentificationList from '~/components/IdentificationList.vue';
 import { EventBusMessage, TextClaim, TextClarification } from '~/types/seven-steps';
+import cuid from 'cuid';
 
 @Component({
   components: {
@@ -35,9 +36,10 @@ export default class Identification extends Vue {
       const message: EventBusMessage = {
         header: [{emitter: 'index'}],
         payload: {
-          localId: '',
+          idLocal: '',
           range: [],
           claim: {
+            idLocal: cuid(),
             translation: {default: ''},
             logic: {}
           },

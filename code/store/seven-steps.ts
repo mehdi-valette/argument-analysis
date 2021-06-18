@@ -73,14 +73,14 @@ export default class SevenStep extends VuexModule {
   /** update the meaning of a clarification */
   @Mutation
   clarificationUpdate({
-    localId,
+    idLocal,
     newClarification,
   }: {
-    localId: string;
+    idLocal: string;
     newClarification: string;
   }) {
     const clarificationFound = this._clarification.find(
-      (clarification) => clarification.localId === localId
+      (clarification) => clarification.idLocal === idLocal
     );
     if (clarificationFound !== undefined) {
       clarificationFound.clarification = newClarification;
@@ -89,9 +89,9 @@ export default class SevenStep extends VuexModule {
 
   /** remove a clarification */
   @Mutation
-  clarificationDelete(localId: string) {
+  clarificationDelete(idLocal: string) {
     this._clarification = this._clarification.filter(
-      (clarification) => clarification.localId !== localId
+      (clarification) => clarification.idLocal !== idLocal
     );
   }
 
@@ -138,8 +138,8 @@ export default class SevenStep extends VuexModule {
 
   /** update a claim */
   @Mutation
-  claimUpdate({ localId, newClaim }: { localId: string; newClaim: Claim }) {
-    const claimFound = this._claim.find((claim) => claim.localId === localId);
+  claimUpdate({ idLocal, newClaim }: { idLocal: string; newClaim: Claim }) {
+    const claimFound = this._claim.find((claim) => claim.idLocal === idLocal);
     if (claimFound !== undefined) {
       claimFound.claim = newClaim;
     }
@@ -148,15 +148,15 @@ export default class SevenStep extends VuexModule {
   /** update whether the claim (un)stated and is a conclusion */
   @Mutation
   claimTypeUpdate({
-    localId,
+    idLocal,
     stated,
     conclusion,
   }: {
-    localId: string;
+    idLocal: string;
     stated: boolean;
     conclusion: boolean;
   }) {
-    const claimFound = this._claim.find((claim) => claim.localId === localId);
+    const claimFound = this._claim.find((claim) => claim.idLocal === idLocal);
 
     if (claimFound !== undefined) {
       claimFound.conclusion = conclusion;
@@ -166,8 +166,8 @@ export default class SevenStep extends VuexModule {
 
   /** remove a claim */
   @Mutation
-  claimDelete(localId: string) {
-    this._claim = this._claim.filter((claim) => claim.localId !== localId);
+  claimDelete(idLocal: string) {
+    this._claim = this._claim.filter((claim) => claim.idLocal !== idLocal);
   }
 
   /** update a claim range */

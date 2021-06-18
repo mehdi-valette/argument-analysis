@@ -35,7 +35,7 @@ export default class Clarification extends Vue {
       const message: EventBusMessage = {
         header: [{emitter: 'index'}],
         payload: {
-          localId: '',
+          idLocal: '',
           clarification: '',
           range: []
         } as TextClarification
