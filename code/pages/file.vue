@@ -38,7 +38,6 @@ import StarterKit from '@tiptap/starter-kit';
     const that: any = this;
 
     if(that.routeConfirmed) {
-      console.log('route confirmed');
       next();
     } else {
       that.routeNext = to;
