@@ -39,9 +39,8 @@ export default class TextEditor extends Vue {
   }
 
   /** When the list of clarifications changes the text is updated accordingly */
-  @Watch('clarificationList')
+  @Watch('clarificationList', {deep: true})
   onClarificationChange(newVale: TextClarification[], oldValue: TextClarification[]) {
-    
     // get clarifications from editor as a map
     const mapEditor = getClarificationEditor(this.editor);
 

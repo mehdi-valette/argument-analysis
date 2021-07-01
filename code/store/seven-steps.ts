@@ -1,4 +1,6 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
+import Vue from 'vue';
+
 import cloneDeep from 'lodash.clonedeep';
 import {
   Claim,
@@ -13,6 +15,10 @@ import {
   RangeModification,
   rangeUpdate,
 } from './function';
+
+const refresh = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj));
+};
 
 @Module({
   name: '7step',
@@ -57,17 +63,21 @@ export default class SevenStep extends VuexModule {
 
   // --------------------- clarification
 
-  private _clarification: TextClarification[] = [];
+  private _clarification: { [id: string]: TextClarification } =
+    Object.create(null);
 
   /** return all clarifications */
   get clarification() {
-    return cloneDeep(this._clarification);
+    console.log('store/seven-steps.ts:71');
+    return Object.keys(this._clarification).map(
+      (key) => this._clarification[key]
+    );
   }
 
   /** create a new clarification */
   @Mutation
   clarificationCreate(clarification: TextClarification) {
-    this._clarification.push(clarification);
+    Vue.set(this._clarification, clarification.idLocal, clarification);
   }
 
   /** update the meaning of a clarification */
@@ -79,9 +89,10 @@ export default class SevenStep extends VuexModule {
     idLocal: string;
     newClarification: string;
   }) {
-    const clarificationFound = this._clarification.find(
-      (clarification) => clarification.idLocal === idLocal
-    );
+    const clarificationFound = this._clarification[idLocal];
+    // this._clarification.find(
+    //   (clarification) => clarification.idLocal === idLocal
+    // );
     if (clarificationFound !== undefined) {
       clarificationFound.clarification = newClarification;
     }
@@ -90,33 +101,48 @@ export default class SevenStep extends VuexModule {
   /** remove a clarification */
   @Mutation
   clarificationDelete(idLocal: string) {
-    this._clarification = this._clarification.filter(
-      (clarification) => clarification.idLocal !== idLocal
-    );
+    Vue.delete(this._clarification, idLocal);
+    // this._clarification = this._clarification.filter(
+    //   (clarification) => clarification.idLocal !== idLocal
+    // );
   }
 
   /** update a clarification range */
   @Mutation
   clarificationRangeUpdate(payload: RangeModification) {
-    this._clarification = rangeUpdate(this._clarification, payload);
+    const clarificationFound = this._clarification[payload.idLocal];
+    if (clarificationFound !== undefined) {
+      clarificationFound.range = payload.range;
+    }
+    // this._clarification = rangeUpdate(this._clarification, payload);
   }
 
   /** remove a text-selection from a clarification */
   @Mutation
-  clarificationRangeDelete(payLoad: RangeDelete) {
-    const newList = rangeDelete(this._clarification, payLoad);
-    if (newList !== null) {
-      this._clarification = newList;
+  clarificationRangeDelete(payload: RangeDelete) {
+    const clarificationFound = this._clarification[payload.idLocal];
+    if (clarificationFound !== undefined) {
+      clarificationFound.range = clarificationFound.range.filter(
+        (range) => !(range.from === payload.from && range.to === payload.to)
+      );
     }
+    // const newList = rangeDelete(this._clarification, payLoad);
+    // if (newList !== null) {
+    //   this._clarification = newList;
+    // }
   }
 
   /** add a text-selection to a clarification*/
   @Mutation
   clarificationRangeAdd(payload: RangeModification) {
-    const newList = rangeAdd(this._clarification, payload);
-    if (newList !== null) {
-      this._clarification = newList;
+    const clarificationFound = this._clarification[payload.idLocal];
+    if (clarificationFound !== undefined) {
+      clarificationFound.range.push(...payload.range);
     }
+    // const newList = rangeAdd(this._clarification, payload);
+    // if (newList !== null) {
+    //   this._clarification = newList;
+    // }
   }
 
   // --------------------- claim/identification

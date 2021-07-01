@@ -62,7 +62,7 @@ export interface TextClaim extends TextExtension {
   number: number;
 }
 
-/** A claim, in a text or not
+/** A claim: something asserted as a fact
  * @prop translation: translations of the claim. Expected: {default: 'string', en: 'hello', fr: 'bonjour'}
  * @prop logic: the argument in a formal logical form. Expected: {lang: 'string', prolog: 'mountain(everest)'}
  */

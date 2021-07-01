@@ -19,7 +19,7 @@ div.clarification-list-item
   //- original text (multiple texts possible)
   clarification-list-item-range(
     v-for="range in clarification.range"
-    :key="clarification.idLocal"
+    :key="`${clarification.idLocal}-${range.from}-${range.to}`"
     :clarification-range="range"
     :clarification-id="clarification.idLocal"
   )
