@@ -59,7 +59,7 @@ export default class TextEditor extends Vue {
   }
 
   /** When the list of claims changes the text is updated accordingly */
-  @Watch('claimList')
+  @Watch('claimList', {deep: true})
   onClaimChange(newVale: TextClaim[], oldValue: TextClaim[]) {
     
     // get claims from editor as a map

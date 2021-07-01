@@ -8,13 +8,7 @@ import {
   TextClarification,
   TextRange,
 } from '~/types/seven-steps';
-import {
-  rangeAdd,
-  RangeDelete,
-  rangeDelete,
-  RangeModification,
-  rangeUpdate,
-} from './function';
+import { RangeDelete, RangeModification } from './function';
 
 const refresh = (obj: any) => {
   return JSON.parse(JSON.stringify(obj));
@@ -68,7 +62,6 @@ export default class SevenStep extends VuexModule {
 
   /** return all clarifications */
   get clarification() {
-    console.log('store/seven-steps.ts:71');
     return Object.keys(this._clarification).map(
       (key) => this._clarification[key]
     );
@@ -90,9 +83,6 @@ export default class SevenStep extends VuexModule {
     newClarification: string;
   }) {
     const clarificationFound = this._clarification[idLocal];
-    // this._clarification.find(
-    //   (clarification) => clarification.idLocal === idLocal
-    // );
     if (clarificationFound !== undefined) {
       clarificationFound.clarification = newClarification;
     }
@@ -102,9 +92,6 @@ export default class SevenStep extends VuexModule {
   @Mutation
   clarificationDelete(idLocal: string) {
     Vue.delete(this._clarification, idLocal);
-    // this._clarification = this._clarification.filter(
-    //   (clarification) => clarification.idLocal !== idLocal
-    // );
   }
 
   /** update a clarification range */
@@ -114,7 +101,6 @@ export default class SevenStep extends VuexModule {
     if (clarificationFound !== undefined) {
       clarificationFound.range = payload.range;
     }
-    // this._clarification = rangeUpdate(this._clarification, payload);
   }
 
   /** remove a text-selection from a clarification */
@@ -126,10 +112,6 @@ export default class SevenStep extends VuexModule {
         (range) => !(range.from === payload.from && range.to === payload.to)
       );
     }
-    // const newList = rangeDelete(this._clarification, payLoad);
-    // if (newList !== null) {
-    //   this._clarification = newList;
-    // }
   }
 
   /** add a text-selection to a clarification*/
@@ -139,33 +121,33 @@ export default class SevenStep extends VuexModule {
     if (clarificationFound !== undefined) {
       clarificationFound.range.push(...payload.range);
     }
-    // const newList = rangeAdd(this._clarification, payload);
-    // if (newList !== null) {
-    //   this._clarification = newList;
-    // }
   }
 
   // --------------------- claim/identification
 
-  private _claim: TextClaim[] = [];
+  private _claim: { [id: string]: TextClaim } = {};
+  private _claimList: string[] = [];
 
   /** return all claims */
   get claim() {
-    return cloneDeep(this._claim);
+    return this._claimList.map((key, index) => {
+      const claim = cloneDeep(this._claim[key]);
+      claim.number = index + 1;
+      return claim;
+    });
   }
 
   /** create a new claim */
   @Mutation
   claimCreate(claim: TextClaim) {
-    claim.number = this._claim.length + 1;
-
-    this._claim.push(claim);
+    this._claimList.push(claim.idLocal);
+    Vue.set(this._claim, claim.idLocal, claim);
   }
 
   /** update a claim */
   @Mutation
   claimUpdate({ idLocal, newClaim }: { idLocal: string; newClaim: Claim }) {
-    const claimFound = this._claim.find((claim) => claim.idLocal === idLocal);
+    const claimFound = this._claim[newClaim.idLocal];
     if (claimFound !== undefined) {
       claimFound.claim = newClaim;
     }
@@ -182,7 +164,7 @@ export default class SevenStep extends VuexModule {
     stated: boolean;
     conclusion: boolean;
   }) {
-    const claimFound = this._claim.find((claim) => claim.idLocal === idLocal);
+    const claimFound = this._claim[idLocal];
 
     if (claimFound !== undefined) {
       claimFound.conclusion = conclusion;
@@ -193,31 +175,29 @@ export default class SevenStep extends VuexModule {
   /** remove a claim */
   @Mutation
   claimDelete(idLocal: string) {
-    this._claim = this._claim.filter((claim) => claim.idLocal !== idLocal);
+    Vue.delete(this._claim, idLocal);
+    this._claimList = this._claimList.filter((claimId) => claimId !== idLocal);
   }
 
   /** update a claim range */
   @Mutation
   claimRangeUpdate(payload: RangeModification) {
-    this._claim = rangeUpdate(this._claim, payload);
+    this._claim[payload.idLocal].range = payload.range;
   }
 
   /** remove a text-selection from a claim */
   @Mutation
   claimRangeDelete(payload: RangeDelete) {
-    const newList = rangeDelete(this._claim, payload);
-    if (newList !== null) {
-      this._claim = newList;
-    }
+    this._claim[payload.idLocal].range = this._claim[
+      payload.idLocal
+    ].range.filter(
+      (range) => range.from !== payload.from || range.to !== payload.to
+    );
   }
 
   /** add a text-selection to a claim*/
   @Mutation
   claimRangeAdd(payload: RangeModification) {
-    const newList = rangeAdd(this._claim, payload);
-
-    if (newList !== null) {
-      this._claim = newList;
-    }
+    this._claim[payload.idLocal].range.push(...payload.range);
   }
 }
