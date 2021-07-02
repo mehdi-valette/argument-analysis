@@ -62,6 +62,19 @@ export interface TextClaim extends TextExtension {
   number: number;
 }
 
+/** A claim made in a text (conclusion or premise)
+ * @prop claim: the identifier of a claim
+ * @prop stated: whether the claim is stated or unstated
+ * @prop conclusion: whether that claim is one of the text's main conclusion
+ * @prop number: the number attributed to this claim within the text
+ */
+export interface TextClaimId extends TextExtension {
+  claim: string;
+  stated: boolean;
+  conclusion: boolean;
+  number: number;
+}
+
 /** A claim: something asserted as a fact
  * @prop translation: translations of the claim. Expected: {default: 'string', en: 'hello', fr: 'bonjour'}
  * @prop logic: the argument in a formal logical form. Expected: {lang: 'string', prolog: 'mountain(everest)'}

@@ -36,7 +36,7 @@ export default class TextEditor extends Vue {
 
   /** get the list of claims from Vuex */
   get claimList() {
-    return this.$store.getters['claim'] as TextClaim[];
+    return this.$store.getters['textClaim'] as TextClaim[];
   }
 
   /** load the clarifications on the annotated text */

@@ -36,7 +36,7 @@ export default class ClaimList extends Vue {
   private claimReference: Element[] = [];
 
   get claimList() {
-    return this.$store.getters['claim'] as TextClaim[];
+    return this.$store.getters['textClaim'] as TextClaim[];
   }
 
   /** trigger IdentificationText to create a new claim  */

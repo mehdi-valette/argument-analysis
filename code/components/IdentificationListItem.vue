@@ -23,7 +23,7 @@ div.claim-list-item
     //- original text (multiple texts possible)
     identification-list-item-range(
       v-for="range in claim.range"
-      :key="claim.idLocal"
+      :key="`${claim.idLocal}-${range.from}-${range.to}`"
       :claim-range="range"
       :claim-id="claim.idLocal"
     )
