@@ -1,28 +1,45 @@
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
+import { store } from '@/store';
 
 import cloneDeep from 'lodash.clonedeep';
 
 @Module({
+  dynamic: true,
+  store: store,
   name: '7step',
-  stateFactory: true,
   namespaced: false,
 })
-export default class SevenStep extends VuexModule {
+export default class FileStore extends VuexModule {
   // ------------------- FILE and TEXT
-  private _fileOriginal: File = new File([], '');
+  private _file: string = '';
   private _textOriginal = {
     type: 'doc',
     content: [{ type: 'paragraph' }],
   };
   private _textAnnotated = {};
 
-  get fileOriginal() {
-    return this._fileOriginal;
+  get file() {
+    return this._file;
   }
 
   @Mutation
-  fileOriginalCreate(file: File) {
-    this._fileOriginal = file;
+  fileSave(file: string) {
+    this._file = file;
+  }
+
+  @Action({ rawError: true })
+  async fileCreate(file: File) {
+    const commit = this.context.commit;
+
+    const fileReader = new FileReader();
+
+    fileReader.onload = function (evt) {
+      if (evt.target !== null) {
+        commit('fileSave', evt.target.result);
+      }
+    };
+
+    fileReader.readAsDataURL(file);
   }
 
   get textAnnotated() {

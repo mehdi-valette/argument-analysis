@@ -104,20 +104,13 @@ export default class Index extends Vue {
   @Watch('file')
   async onFile() {
     if(this.file.name !== undefined && this.file.name !== ''){
-      this.$store.commit('fileOriginalCreate', this.file);
+      await this.$store.dispatch('fileCreate', this.file);
     }
   }
 
   /** Transform a PDF file into an URL object that can be passed to the tab 'object' */
   get fileData() {
-    const fileStore: File = this.$store.getters['fileOriginal'];
-    let returnValue = ''
-
-    if(fileStore.name !== undefined && fileStore.name !== '') {
-      returnValue = URL.createObjectURL(fileStore);
-    }
-
-    return returnValue;
+    return this.$store.getters['file'];
   }
 }
 </script>
