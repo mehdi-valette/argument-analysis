@@ -3,11 +3,14 @@ import Vue from 'vue';
 
 import { TextClarification } from '~/types/seven-steps';
 import { RangeDelete, RangeModification } from './function';
+import { store } from '@/store';
 
 @Module({
-  name: '7step',
-  stateFactory: true,
+  store,
+  dynamic: true,
+  name: 'clarification',
   namespaced: false,
+  stateFactory: true,
 })
 export default class Clarification extends VuexModule {
   private _clarification: { [id: string]: TextClarification } =

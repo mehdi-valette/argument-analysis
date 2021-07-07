@@ -6,8 +6,9 @@ import cloneDeep from 'lodash.clonedeep';
 @Module({
   dynamic: true,
   store: store,
-  name: '7step',
+  name: 'file',
   namespaced: false,
+  stateFactory: true,
 })
 export default class FileStore extends VuexModule {
   // ------------------- FILE and TEXT

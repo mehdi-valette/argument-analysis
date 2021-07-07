@@ -84,7 +84,7 @@ export default class ClaimListItem extends Vue {
   }
 
   claimDelete() {
-    this.$store.commit('claimDelete', this.claim.idLocal);
+    this.$store.dispatch('textClaimDelete', this.claim.idLocal);
   }
 
   // add the selected text to the claim

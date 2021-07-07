@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep';
 import { TextRange, TextExtension } from '~/types/seven-steps';
 
 export interface RangeModification {

@@ -184,15 +184,15 @@ export default class TextEditor extends Vue {
       ) {
         // create a claim if the idLocal wasn't supplied
         if(message.payload.idLocal === '') {
-          this.$store.commit(
-            'claimCreate',
+          this.$store.dispatch(
+            'textClaimCreate',
             claim
           );
 
         // update the claim if the idLocal was supplied
         } else {
           this.$store.commit(
-            'claimRangeAdd',
+            'textClaimRangeAdd',
             {
               idLocal: claim.idLocal,
               range: claim.range
