@@ -21,14 +21,14 @@ div.clarification-list
 </template>
 
 <script lang="ts">
-import {Vue, Component, Watch} from 'vue-property-decorator';
-import { TextClarification, EventBusMessage } from '~/types/seven-steps';
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import { TextClarification, EventBusMessage } from '~/types/interface';
 import ClarificationListItem from '@/components/ClarificationListItem.vue';
 
 @Component({
   components: {
-    ClarificationListItem
-  }
+    ClarificationListItem,
+  },
 })
 export default class ClarificationList extends Vue {
   private clarificationListCheck: string[] = [];
@@ -40,16 +40,14 @@ export default class ClarificationList extends Vue {
 
   getClarification() {
     const message: EventBusMessage = {
-      header: [{emitter: 'clarification-list'}],
+      header: [{ emitter: 'clarification-list' }],
       payload: {
         idLocal: '',
         clarification: '',
-      }
-    }
+      },
+    };
 
-    this.$bus.$emit(
-      'text-clarification-add', message
-    );
+    this.$bus.$emit('text-clarification-add', message);
   }
 }
 </script>
@@ -61,7 +59,7 @@ export default class ClarificationList extends Vue {
   height: 100%;
   overflow: auto;
   border: 1px solid black;
-  border-radius: .5em;
+  border-radius: 0.5em;
 
   .top {
     flex-grow: 1;

@@ -20,14 +20,18 @@ div.identification-list-item-number(
 <script lang="ts">
 import cuid from 'cuid';
 import { cloneDeep } from 'lodash';
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import { TextClaim } from '~/types/seven-steps';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { TextClaim } from '~/types/interface';
 
-type ClaimType = 'conclusionStated' | 'conclusionUnstated' | 'premiseStated' | 'premiseUnstated';
+type ClaimType =
+  | 'conclusionStated'
+  | 'conclusionUnstated'
+  | 'premiseStated'
+  | 'premiseUnstated';
 
 @Component({})
 export default class IdentificationListItemNumber extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly claim!: TextClaim;
 
   private claimTypeTrigger: string = cuid();
@@ -36,20 +40,20 @@ export default class IdentificationListItemNumber extends Vue {
   private claimTypeList = [
     {
       text: 'stated conclusion',
-      value: 'conclusionStated'
-    }, 
+      value: 'conclusionStated',
+    },
     {
       text: 'unstated conclusion',
-      value: 'conclusionUnstated'
-    }, 
+      value: 'conclusionUnstated',
+    },
     {
       text: 'stated premise',
-      value: 'premiseStated'
-    }, 
+      value: 'premiseStated',
+    },
     {
       text: 'unstated premise',
-      value: 'premiseUnstated'
-    }
+      value: 'premiseUnstated',
+    },
   ];
 
   /** update the claim in Vuex */
@@ -57,18 +61,19 @@ export default class IdentificationListItemNumber extends Vue {
     let conclusion: boolean = false;
     let stated: boolean = true;
 
-    if(newType.includes('conclusion')) {
+    if (newType.includes('conclusion')) {
       conclusion = true;
     }
 
-    if(newType.includes('Unstated')) {
+    if (newType.includes('Unstated')) {
       stated = false;
     }
 
-    this.$store.commit(
-      'textClaimTypeUpdate',
-      {idLocal: this.claim.idLocal, conclusion, stated}
-    );
+    this.$store.commit('textClaimTypeUpdate', {
+      idLocal: this.claim.idLocal,
+      conclusion,
+      stated,
+    });
   }
 }
 </script>
@@ -81,10 +86,10 @@ export default class IdentificationListItemNumber extends Vue {
   .number {
     // by default, unstated claims are within parenthesis
     &::before {
-      content: "(";
+      content: '(';
     }
     &::after {
-      content: ")";
+      content: ')';
     }
 
     // conclusion are in bold

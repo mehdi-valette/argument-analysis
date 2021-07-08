@@ -8,16 +8,15 @@ div.clarification
 import { Vue, Component } from 'vue-property-decorator';
 import ClarificationText from '~/components/ClarificationText.vue';
 import ClarificationList from '~/components/ClarificationList.vue';
-import { EventBusMessage, TextClarification } from '~/types/seven-steps';
+import { EventBusMessage, TextClarification } from '~/types/interface';
 
 @Component({
   components: {
     ClarificationText,
-    ClarificationList
-  }
+    ClarificationList,
+  },
 })
 export default class Clarification extends Vue {
-
   get text() {
     return this.$store.getters['textAnnotated'];
   }
@@ -31,15 +30,15 @@ export default class Clarification extends Vue {
   }
 
   keyboardHandler(event: KeyboardEvent) {
-    if(event.key === "Enter" && event.ctrlKey === false) {
+    if (event.key === 'Enter' && event.ctrlKey === false) {
       const message: EventBusMessage = {
-        header: [{emitter: 'index'}],
+        header: [{ emitter: 'index' }],
         payload: {
           idLocal: '',
           clarification: '',
-          range: []
-        } as TextClarification
-      }
+          range: [],
+        } as TextClarification,
+      };
 
       this.$bus.$emit('text-clarification-add', message);
     }
@@ -57,8 +56,8 @@ export default class Clarification extends Vue {
   .text {
     overflow: auto;
     border: 1px solid black;
-    border-radius: .3em;
-    padding: .5em;
+    border-radius: 0.3em;
+    padding: 0.5em;
   }
 }
 </style>

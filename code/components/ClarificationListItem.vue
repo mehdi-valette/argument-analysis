@@ -43,12 +43,11 @@ div.clarification-list-item
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import {BIcon, BIconXOctagon, BIconNodePlus} from 'bootstrap-vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { BIcon, BIconXOctagon, BIconNodePlus } from 'bootstrap-vue';
 
-import { EventBusMessage, TextClarification } from '~/types/seven-steps';
-import ClarificationListItemRange from
-  '~/components/ClarificationListItemRange.vue';
+import { EventBusMessage, TextClarification } from '~/types/interface';
+import ClarificationListItemRange from '~/components/ClarificationListItemRange.vue';
 
 @Component({
   components: {
@@ -56,10 +55,10 @@ import ClarificationListItemRange from
     BIconXOctagon,
     ClarificationListItemRange,
     BIconNodePlus,
-  }
+  },
 })
 export default class ClarificationListItem extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly clarification!: TextClarification;
 
   private modalDelete: boolean = false;
@@ -70,7 +69,10 @@ export default class ClarificationListItem extends Vue {
   set clarificationText(newClarification: string) {}
 
   clarificationUpdate(newClarification: string) {
-    this.$store.commit('clarificationUpdate', {idLocal: this.clarification.idLocal, newClarification});
+    this.$store.commit('clarificationUpdate', {
+      idLocal: this.clarification.idLocal,
+      newClarification,
+    });
   }
 
   clarificationDelete() {
@@ -80,18 +82,15 @@ export default class ClarificationListItem extends Vue {
   // add the selected text to the clarification
   addSelection() {
     const message: EventBusMessage = {
-      header: [{emitter: `clarification-list-item`}],
-      payload: this.clarification
-    }
+      header: [{ emitter: `clarification-list-item` }],
+      payload: this.clarification,
+    };
 
-    this.$bus.$emit(
-      'text-clarification-add',
-      message
-    );
+    this.$bus.$emit('text-clarification-add', message);
   }
 
   mounted() {
-    if(this.clarificationText === '') {
+    if (this.clarificationText === '') {
       (this.$refs.clarificationInput as any).focus();
     }
   }

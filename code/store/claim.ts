@@ -1,6 +1,6 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
 import Vue from 'vue';
-import { Claim } from '~/types/seven-steps';
+import { Claim } from '~/types/interface';
 import { store } from '@/store';
 
 @Module({

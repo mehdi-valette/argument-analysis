@@ -21,15 +21,15 @@ div.claim-list
 </template>
 
 <script lang="ts">
-import {Vue, Component, Watch} from 'vue-property-decorator';
-import { TextClaim, EventBusMessage } from '~/types/seven-steps';
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import { TextClaim, EventBusMessage } from '~/types/interface';
 import ClaimListItem from '@/components/IdentificationListItem.vue';
 import cuid from 'cuid';
 
 @Component({
   components: {
-    ClaimListItem
-  }
+    ClaimListItem,
+  },
 })
 export default class ClaimList extends Vue {
   private claimListCheck: string[] = [];
@@ -42,26 +42,24 @@ export default class ClaimList extends Vue {
   /** trigger IdentificationText to create a new claim  */
   getClaim() {
     const message: EventBusMessage = {
-      header: [{emitter: 'claim-list'}],
+      header: [{ emitter: 'claim-list' }],
       payload: {
         claim: {
           idLocal: '',
           translation: {
-            default: ''
+            default: '',
           },
-          logic: {}
+          logic: {},
         },
         stated: false,
         conclusion: false,
         number: 0,
         idLocal: '',
-        range: []
-      } as TextClaim
-    }
+        range: [],
+      } as TextClaim,
+    };
 
-    this.$bus.$emit(
-      'text-claim-add', message
-    );
+    this.$bus.$emit('text-claim-add', message);
   }
 }
 </script>
@@ -73,7 +71,7 @@ export default class ClaimList extends Vue {
   height: 100%;
   overflow: auto;
   border: 1px solid black;
-  border-radius: .5em;
+  border-radius: 0.5em;
 
   .top {
     flex-grow: 1;

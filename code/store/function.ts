@@ -1,4 +1,4 @@
-import { TextRange, TextExtension } from '~/types/seven-steps';
+import { TextRange, TextExtension } from '~/types/interface';
 
 export interface RangeModification {
   idLocal: string;

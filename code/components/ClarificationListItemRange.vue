@@ -20,35 +20,32 @@ div.clarification-list-item-text-selection
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import { TextRange } from '~/types/seven-steps';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { TextRange } from '~/types/interface';
 
-import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
+import { BIcon, BIconXOctagonFill } from 'bootstrap-vue';
 
 @Component({
   components: {
     BIcon,
     BIconXOctagonFill,
-  }
+  },
 })
 export default class ClarificationlistItemclarificationRange extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly clarificationRange!: TextRange;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly clarificationId!: string;
 
   private deleteModalShow: boolean = false;
 
   deleteText() {
-    this.$store.commit(
-      'clarificationRangeDelete',
-      {
-        idLocal: this.clarificationId,
-        from: this.clarificationRange.from,
-        to: this.clarificationRange.to
-      }
-    )
+    this.$store.commit('clarificationRangeDelete', {
+      idLocal: this.clarificationId,
+      from: this.clarificationRange.from,
+      to: this.clarificationRange.to,
+    });
   }
 }
 </script>

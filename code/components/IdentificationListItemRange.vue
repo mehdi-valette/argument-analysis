@@ -20,35 +20,32 @@ div.claim-list-item-text-selection
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import { TextRange } from '~/types/seven-steps';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { TextRange } from '~/types/interface';
 
-import {BIcon, BIconXOctagonFill} from 'bootstrap-vue';
+import { BIcon, BIconXOctagonFill } from 'bootstrap-vue';
 
 @Component({
   components: {
     BIcon,
     BIconXOctagonFill,
-  }
+  },
 })
 export default class ClaimlistItemclaimRange extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly claimRange!: TextRange;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly claimId!: string;
 
   private deleteModalShow: boolean = false;
 
   deleteText() {
-    this.$store.commit(
-      'textClaimRangeDelete',
-      {
-        idLocal: this.claimId,
-        from: this.claimRange.from,
-        to: this.claimRange.to
-      }
-    )
+    this.$store.commit('textClaimRangeDelete', {
+      idLocal: this.claimId,
+      from: this.claimRange.from,
+      to: this.claimRange.to,
+    });
   }
 }
 </script>

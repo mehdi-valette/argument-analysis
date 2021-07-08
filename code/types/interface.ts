@@ -76,7 +76,7 @@ export interface TextClaimId extends TextExtension {
 }
 
 /** A claim: something asserted as a fact
- * @prop translation: translations of the claim. Expected: {default: 'string', en: 'hello', fr: 'bonjour'}
+ * @member translation: translations of the claim. Expected: {default: 'string', en: 'hello', fr: 'bonjour'}
  * @prop logic: the argument in a formal logical form. Expected: {lang: 'string', prolog: 'mountain(everest)'}
  */
 export interface Claim {
@@ -89,6 +89,24 @@ export interface Claim {
   logic: {
     prolog?: string;
   };
+}
+
+/** A set of premises that arrive to one or more conclusions.
+ * The premises and the conclusions are all claims.
+ */
+export interface Argument {
+  idLocal: string;
+  idDatabase?: string;
+  premise: Claim[];
+  conclusion: Claim[];
+}
+
+/** An argument whose premises and conclusions have been replace by their identifiers */
+export interface ArgumentId {
+  idLocal: string;
+  idDatabase?: string;
+  premise: string[];
+  conclusion: string[];
 }
 
 /** A message that travel through the event bus */

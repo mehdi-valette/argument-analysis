@@ -7,22 +7,22 @@ svg(viewBox="0 0 1000 1000").svg
 </template>
 
 <script lang="ts">
-import {Component, Vue, Provide} from 'vue-property-decorator';
+import { Component, Vue, Provide } from 'vue-property-decorator';
 import StructureClaim from '@/components/StructureClaim.vue';
 import StructureLink from '@/components/StructureLink.vue';
-import panzoom, {PanZoom} from 'panzoom';
-import { TextClaimGroup } from '~/types/seven-steps';
+import panzoom, { PanZoom } from 'panzoom';
+import { TextClaimGroup } from '~/types/interface';
 import cuid from 'cuid';
 
 @Component({
   components: {
     StructureClaim,
     StructureLink,
-  }
+  },
 })
 export default class StructureContainer extends Vue {
   @Provide()
-  private scale = {val: 1};
+  private scale = { val: 1 };
 
   mounted() {
     const panzoomElement = this.$refs.panzoom as HTMLElement;
@@ -31,27 +31,31 @@ export default class StructureContainer extends Vue {
     const claimGroupList: TextClaimGroup[] = [
       {
         group: [
-        {
-          claim: {idLocal: cuid(), translation: {default: 'one'}, logic: {}},
-          number: 1,
-          index: 0,
-        }
+          {
+            claim: {
+              idLocal: cuid(),
+              translation: { default: 'one' },
+              logic: {},
+            },
+            number: 1,
+            index: 0,
+          },
         ],
         leaf: false,
         width: 10,
-        height: 100
-      }
+        height: 100,
+      },
     ];
 
     const instance: PanZoom = panzoom(this.$refs.panzoom as HTMLElement, {
       bounds: true,
       beforeWheel: (e) => {
-        const offset = {x: e.clientX, y: e.clientY};
-        let delta = 1 + (e.deltaY/-1000);
+        const offset = { x: e.clientX, y: e.clientY };
+        let delta = 1 + e.deltaY / -1000;
         instance.zoomTo(offset.x, offset.y, delta);
         e.preventDefault();
         return true;
-      }
+      },
     });
   }
 }

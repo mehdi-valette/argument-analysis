@@ -2,7 +2,7 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Vue from 'vue';
 
 import cloneDeep from 'lodash.clonedeep';
-import { Claim, TextClaim, TextClaimId } from '~/types/seven-steps';
+import { Claim, TextClaim, TextClaimId } from '~/types/interface';
 import { RangeDelete, RangeModification } from './function';
 import { store } from '@/store';
 import cuid from 'cuid';

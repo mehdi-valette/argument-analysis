@@ -5,7 +5,7 @@ import {
   markPasteRule,
   mergeAttributes,
 } from '@tiptap/core';
-import { Claim as ClaimInterface } from '~/types/seven-steps';
+import { Claim as ClaimInterface } from '~/types/interface';
 
 export interface ClaimOptions {
   HTMLAttributes: Record<string, any>;

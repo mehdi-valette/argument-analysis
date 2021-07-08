@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
 import Vue from 'vue';
 
-import { TextClarification } from '~/types/seven-steps';
+import { TextClarification } from '~/types/interface';
 import { RangeDelete, RangeModification } from './function';
 import { store } from '@/store';
 

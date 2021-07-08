@@ -47,15 +47,13 @@ div.claim-list-item
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import {BIcon, BIconXOctagon, BIconNodePlus} from 'bootstrap-vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { BIcon, BIconXOctagon, BIconNodePlus } from 'bootstrap-vue';
 import cloneDeep from 'lodash.clonedeep';
 
-import { EventBusMessage, TextClaim } from '~/types/seven-steps';
-import IdentificationListItemRange from
-  '~/components/IdentificationListItemRange.vue';
-import IdentificationListItemNumber from
-  '@/components/IdentificationListItemNumber.vue';
+import { EventBusMessage, TextClaim } from '~/types/interface';
+import IdentificationListItemRange from '~/components/IdentificationListItemRange.vue';
+import IdentificationListItemNumber from '@/components/IdentificationListItemNumber.vue';
 
 @Component({
   components: {
@@ -64,10 +62,10 @@ import IdentificationListItemNumber from
     BIconNodePlus,
     IdentificationListItemRange,
     IdentificationListItemNumber,
-  }
+  },
 })
 export default class ClaimListItem extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly claim!: TextClaim;
 
   private modalDelete: boolean = false;
@@ -80,7 +78,10 @@ export default class ClaimListItem extends Vue {
   claimUpdate(newDefaultText: string) {
     const newClaim = cloneDeep(this.claim.claim);
     newClaim.translation.default = newDefaultText;
-    this.$store.commit('claimUpdate', {idLocal: this.claim.idLocal, newClaim});
+    this.$store.commit('claimUpdate', {
+      idLocal: this.claim.idLocal,
+      newClaim,
+    });
   }
 
   claimDelete() {
@@ -90,18 +91,15 @@ export default class ClaimListItem extends Vue {
   // add the selected text to the claim
   addSelection() {
     const message: EventBusMessage = {
-      header: [{emitter: `claim-list-item`}],
-      payload: this.claim
-    }
+      header: [{ emitter: `claim-list-item` }],
+      payload: this.claim,
+    };
 
-    this.$bus.$emit(
-      'text-claim-add',
-      message
-    );
+    this.$bus.$emit('text-claim-add', message);
   }
 
   mounted() {
-    if(this.claimText === '') {
+    if (this.claimText === '') {
       (this.$refs.claimInput as any).focus();
     }
   }

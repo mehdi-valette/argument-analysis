@@ -1,4 +1,4 @@
-import { TextExtension, TextRange } from '@/types/seven-steps';
+import { TextExtension, TextRange } from '@/types/interface';
 import { Editor } from '@tiptap/core';
 
 /** check whether a text selected in a new clarification already exists */
